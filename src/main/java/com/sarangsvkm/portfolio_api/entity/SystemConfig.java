@@ -14,6 +14,7 @@ public class SystemConfig {
     @Column(unique = true, nullable = false)
     private String configKey;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String configValue;
 }
+
