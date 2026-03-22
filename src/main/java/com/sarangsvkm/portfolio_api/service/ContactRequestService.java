@@ -50,7 +50,7 @@ public class ContactRequestService {
     private void sendOtpEmail(String toEmail, String name, String otp) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("your_email@gmail.com"); // Ensure this matches spring.mail.username
+            message.setFrom("sarangsvkmsuperuser@gmail.com"); // Ensure this matches spring.mail.username
             message.setTo(toEmail);
             message.setSubject("Your One-Time Password (OTP) for Portfolio Access");
             message.setText("Hi " + name + ",\n\nYour OTP to view my contact details is: " + otp + "\n\nThis OTP is valid for a short period.\n\nThank you!");
