@@ -16,12 +16,15 @@ public class ContactRequestService {
     private final ContactRequestRepository repo;
     private final ProfileService profileService;
     private final JavaMailSender mailSender;
+    private final com.sarangsvkm.portfolio_api.repository.SystemConfigRepository configRepo;
 
-    public ContactRequestService(ContactRequestRepository repo, ProfileService profileService, JavaMailSender mailSender) {
+    public ContactRequestService(ContactRequestRepository repo, ProfileService profileService, JavaMailSender mailSender, com.sarangsvkm.portfolio_api.repository.SystemConfigRepository configRepo) {
         this.repo = repo;
         this.profileService = profileService;
         this.mailSender = mailSender;
+        this.configRepo = configRepo;
     }
+
 
     public String generateAndSaveOtp(ContactRequest request) {
         // Generate a 6-digit OTP
@@ -49,8 +52,12 @@ public class ContactRequestService {
 
     private void sendOtpEmail(String toEmail, String name, String otp) {
         try {
+            String fromEmail = configRepo.findByConfigKey("spring.mail.username")
+                    .map(com.sarangsvkm.portfolio_api.entity.SystemConfig::getConfigValue)
+                    .orElse("sarangsvkmsuperuser@gmail.com");
+
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("sarangsvkmsuperuser@gmail.com"); // Ensure this matches spring.mail.username
+            message.setFrom(fromEmail);
             message.setTo(toEmail);
             message.setSubject("Your One-Time Password (OTP) for Portfolio Access");
             message.setText("Hi " + name + ",\n\nYour OTP to view my contact details is: " + otp + "\n\nThis OTP is valid for a short period.\n\nThank you!");
@@ -59,6 +66,7 @@ public class ContactRequestService {
             System.err.println("Failed to send email to " + toEmail + ": " + e.getMessage());
         }
     }
+
 
     public List<ContactRequest> getAll() {
         return repo.findAll();
