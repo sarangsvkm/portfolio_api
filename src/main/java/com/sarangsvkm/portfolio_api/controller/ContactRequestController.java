@@ -25,10 +25,10 @@ public class ContactRequestController {
         if(request.getEmail() == null || request.getEmail().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is required");
         }
-        String otp = service.generateAndSaveOtp(request);
+        service.generateAndSaveOtp(request);
         Map<String, String> response = new HashMap<>();
-        response.put("message", "OTP generated successfully");
-        response.put("otp", otp); // Returned in response for testing
+        response.put("message", "An OTP has been sent to your email address!");
+        // We no longer return the OTP in the API response for security
         return response;
     }
 
