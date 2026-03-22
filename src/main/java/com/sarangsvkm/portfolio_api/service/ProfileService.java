@@ -1,11 +1,12 @@
 package com.sarangsvkm.portfolio_api.service;
 
-import org.springframework.stereotype.Service;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
+import com.sarangsvkm.portfolio_api.encryptionUtils.EncryptionUtils;
 import com.sarangsvkm.portfolio_api.entity.Profile;
 import com.sarangsvkm.portfolio_api.repository.ProfileRepository;
-import com.sarangsvkm.portfolio_api.encryptionUtils.EncryptionUtils;
 
 @Service
 public class ProfileService {
@@ -28,7 +29,7 @@ public class ProfileService {
         p.setPhone(enc(p.getPhone()));
         p.setLocation(enc(p.getLocation()));
 
-        return repo.save(p);
+        return repo.save(p); // ✅ return entity
     }
 
     // 🔓 GET ALL (Decrypt)
@@ -55,5 +56,37 @@ public class ProfileService {
 
     private String dec(String data) throws Exception {
         return data == null ? null : encryptionUtils.decrypt(data);
+    }
+
+    public Profile update(int id, Profile newData) {
+
+        Profile existing = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Profile not found"));
+
+        try {
+            if (newData.getName() != null)
+                existing.setName(enc(newData.getName()));
+
+            if (newData.getTitle() != null)
+                existing.setTitle(enc(newData.getTitle()));
+
+            if (newData.getEmail() != null)
+                existing.setEmail(enc(newData.getEmail()));
+
+            if (newData.getPhone() != null)
+                existing.setPhone(enc(newData.getPhone()));
+
+            if (newData.getLocation() != null)
+                existing.setLocation(enc(newData.getLocation()));
+
+            if (newData.getAbout() != null)
+                existing.setAbout(enc(newData.getAbout()));
+
+        } catch (Exception e) {
+            e.printStackTrace(); // 🔍 debug
+            throw new RuntimeException("Error updating profile");
+        }
+
+        return repo.save(existing);
     }
 }

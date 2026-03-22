@@ -1,56 +1,112 @@
-# Portfolio API
+# 🚀 Portfolio API
 
-A robust, enterprise-ready Spring Boot backend for managing professional portfolio data. This API serves as the centralized data layer for portfolio websites, providing structured endpoints to manage a user's professional identity, experiences, skills, projects, and education.
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.12-brightgreen)](https://spring.io/projects/spring-boot)
+[![Java](https://img.shields.io/badge/Java-17-orange)](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Overview
+A robust, enterprise-ready Spring Boot backend designed to serve as the centralized data layer for professional portfolio websites. This API provides structured endpoints to manage a user's professional identity, experiences, skills, projects, and education with built-in security and data integrity.
 
-The `portfolio-api` is designed with a clear domain-driven architecture, implementing various entities to thoroughly capture a professional's resume and portfolio details. 
+---
 
-It also includes built-in User Management, Header-based Authentication features, and automatic Data Encryption to securely manage information in the database.
+## 🌟 Key Features
 
-## Core Entities
+- **🎯 Domain-Driven Design**: Clearly defined entities for Profile, Projects, Education, Experience, and Skills.
+- **📄 Unified Resume API**: A powerful `POST /api/resume` endpoint to save or update an entire professional profile, including all sub-entities, in a single atomic request.
+- **🔄 Full CRUD Lifecycle**: Support for creating, reading, and updating professional records for all domain entities.
+- **🛡️ Secure By Design**:
+  - **Header-Based Authentication**: Custom security layer requiring `username` and `password` headers for all mutation (POST/PUT/DELETE) operations.
+  - **AES Data Encryption**: All sensitive fields across all entities are encrypted at rest using `EncryptionUtils` (AES/ECB/PKCS5Padding) and transparently decrypted for authorized retrieval.
+- **📱 OTP-Gated Contact Reveal**: A unique feature that protects personal contact information (phone number) behind a One-Time Password verification flow for visitors.
 
-The API is built around several core entities mapping directly to the relational database structure (JPA/Hibernate):
+- **📧 Integrated Mail Services**: Automated email dispatch for contact requests and OTP verification.
+- **🗄️ Relational Persistence**: Fully integrated with PostgreSQL via Spring Data JPA for reliable data storage.
+- **⚡ Developer Optimized**: Utilizes Lombok to minimize boilerplate and Spring DevTools for rapid iteration.
 
-1. **Profile**: General information (`name`, `title`, `about`, `email`, `phone`, `location`).
-2. **Projects**: Showcase of professional or personal projects.
-3. **Education**: Academic background and achievements.
-4. **Experience**: Work history and professional roles.
-6. **API User**: Internal users to handle the authentication layer, ensuring that portfolio details are securely managed.
-7. **Contact Request**: Handles visitor lead generation and OTP-based verification for revealing private contact details.
+---
 
-## Security & Features
+## 🛠️ Technology Stack
 
-- **OTP Contact Revealer**: Gated endpoint that safely reveals your personal phone number only after visitors provide their details and verify a One-Time Password.
-- **Header-Based Authentication**: All `POST` endpoints are secured. To create or update records, clients must provide `username` and `password` as HTTP Headers (`@RequestHeader`).
-- **Data Encryption**: The service layer seamlessly utilizes `EncryptionUtils` to encrypt sensitive entity features (such as `password`, `degree`, `institution`, project `description`, etc.) upon saving, and then automatically decrypts them during `GET` retrieval.
-- **Spring Boot Ecosystem**: Utilizes Spring Web, Spring Data JPA, and Spring Boot Starters for reliable REST API development.
-- **Lombok Integration**: Reduces boilerplate code by automatically generating Getters, Setters, and Constructors.
-- **Clean Architecture**: Distinct separation between Controllers, Services, and Repositories for maintainability.
+- **Backend Framework**: Spring Boot 3.5.12
+- **Language**: Java 17
+- **Data Access**: Spring Data JPA / Hibernate
+- **Database**: PostgreSQL (Optimized for Neon)
+- **Security**: Spring Security (Custom Filter Chain)
+- **Utilities**: Lombok, Spring Mail, Jasypt-derived Encryption
 
-## Getting Started
+---
+
+## 📁 Project Structure
+
+```text
+src/main/java/com/sarangsvkm/portfolio_api/
+├── controller/      # REST Endpoints
+├── service/         # Business Logic & Encryption logic
+├── repository/      # Data Access Layer
+├── entity/          # JPA Entities
+├── config/          # Security & Application Configuration
+├── encryptionUtils/ # AES Encryption Utilities
+└── apiuser/         # Authentication & User Management
+```
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
-- Java 17+
-- Maven
-- A preferred relational database (e.g., MySQL / PostgreSQL / H2)
 
-### Running the Project
+- **Java Development Kit (JDK) 17** or higher
+- **Maven 3.6+**
+- **PostgreSQL Database** (or any compatible RDBMS)
 
-1. **Clone the repository:**
+### Installation & Setup
+
+1. **Clone the Repository**
    ```bash
    git clone https://github.com/sarangsvkm/portfolio_api.git
    cd portfolio_api
    ```
 
-2. **Configure Database Connection:**
-   Update your `src/main/resources/application.properties` with the correct database credentials.
-
-3. **Build and Run:**
-   Using the Maven wrapper for Windows:
-   ```bash
-   mvnw.cmd spring-boot:run
+2. **Configure Environment**
+   Update `src/main/resources/application.properties` with your database and mail server credentials:
+   ```properties
+   spring.datasource.url=jdbc:postgresql://your-db-host:5432/your-db
+   spring.datasource.username=your-username
+   spring.datasource.password=your-password
+   
+   spring.mail.username=your-email@gmail.com
+   spring.mail.password=your-app-password
    ```
-   *(For Unix use `./mvnw spring-boot:run`)*
 
-The application will start up, automatically sync the schema, and expose the REST endpoints for front-end integration.
+3. **Build and Run**
+   ```bash
+   # Windows
+   mvnw.cmd spring-boot:run
+   
+   # Linux/macOS
+   ./mvnw spring-boot:run
+   ```
+
+---
+
+## 🔐 Security & API Authentication
+
+All non-GET requests (POST, PUT) require the following headers for authentication:
+
+| Header | Description |
+| :--- | :--- |
+| `username` | Your administrative username |
+| `password` | Your administrative password |
+
+*Note: In production environments, it is highly recommended to use HTTPS to protect these headers.*
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE.md](file:///e:/SRG/portfolio-api/LICENSE.md) file for details.
+
+---
+
+## 👨‍💻 Author
+
+**Sarang** - *Lead Developer* - [GitHub](https://github.com/sarangsvkm)

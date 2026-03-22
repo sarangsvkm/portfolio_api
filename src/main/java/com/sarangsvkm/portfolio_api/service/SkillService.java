@@ -18,44 +18,54 @@ public class SkillService {
         this.encryptionUtils = encryptionUtils;
     }
 
-    // 🔐 SAVE (Encrypt before DB)
     public Skill save(Skill s) {
-
-        s.setName(enc(s.getName()));
-        s.setLevel(enc(s.getLevel()));
-
-        return repo.save(s);
+        encrypt(s);
+        Skill saved = repo.save(s);
+        decrypt(saved);
+        return saved;
     }
 
-    // 🔓 GET ALL (Decrypt before response)
     public List<Skill> getAll() {
-
         List<Skill> list = repo.findAll();
-
-        for (Skill s : list) {
-            s.setName(dec(s.getName()));
-            s.setLevel(dec(s.getLevel()));
-        }
-
+        list.forEach(this::decrypt);
         return list;
     }
 
-    // 🔧 Utility methods
+    public Skill update(int id, Skill newData) {
+        Skill existing = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Skill not found"));
+
+        if (newData.getName() != null)
+            existing.setName(enc(newData.getName()));
+
+        if (newData.getLevel() != null)
+            existing.setLevel(enc(newData.getLevel()));
+
+        if (newData.getCategory() != null)
+            existing.setCategory(enc(newData.getCategory()));
+
+        Skill updated = repo.save(existing);
+        decrypt(updated);
+        return updated;
+    }
+
+    private void encrypt(Skill s) {
+        s.setName(enc(s.getName()));
+        s.setLevel(enc(s.getLevel()));
+        s.setCategory(enc(s.getCategory()));
+    }
+
+    private void decrypt(Skill s) {
+        s.setName(dec(s.getName()));
+        s.setLevel(dec(s.getLevel()));
+        s.setCategory(dec(s.getCategory()));
+    }
+
     private String enc(String data) {
-        if (data == null) return null;
-        try {
-            return encryptionUtils.encrypt(data);
-        } catch (Exception e) {
-            throw new RuntimeException("Encryption failed", e);
-        }
+        return data == null ? null : encryptionUtils.encrypt(data);
     }
 
     private String dec(String data) {
-        if (data == null) return null;
-        try {
-            return encryptionUtils.decrypt(data);
-        } catch (Exception e) {
-            throw new RuntimeException("Decryption failed", e);
-        }
+        return data == null ? null : encryptionUtils.decrypt(data);
     }
 }

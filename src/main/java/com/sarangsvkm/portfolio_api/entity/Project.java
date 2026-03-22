@@ -11,10 +11,16 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Column(length = 500)
+    private String title;
 
-    @Column(length = 1000)
+    @Column(length = 500)
+    private String link;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(length = 500)
     private String techStack;
+
 }

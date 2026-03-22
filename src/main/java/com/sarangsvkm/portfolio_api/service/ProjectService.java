@@ -20,43 +20,57 @@ public class ProjectService {
         this.encryptionUtils = encryptionUtils;
     }
 
-    // 🔐 SAVE
     public Project save(Project p) {
-
-        p.setName(enc(p.getName()));
-        p.setDescription(enc(p.getDescription()));
-        p.setTechStack(enc(p.getTechStack()));
-
-        return repo.save(p);
+        encrypt(p);
+        Project saved = repo.save(p);
+        decrypt(saved);
+        return saved;
     }
 
-    // 🔓 GET
     public List<Project> getAll() {
-
         List<Project> list = repo.findAll();
-
-        for (Project p : list) {
-            p.setName(dec(p.getName()));
-            p.setDescription(dec(p.getDescription()));
-            p.setTechStack(dec(p.getTechStack()));
-        }
-
+        list.forEach(this::decrypt);
         return list;
     }
 
+    public Project update(int id, Project newData) {
+        Project existing = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+
+        if (newData.getTitle() != null)
+            existing.setTitle(enc(newData.getTitle()));
+
+        if (newData.getLink() != null)
+            existing.setLink(enc(newData.getLink()));
+
+        if (newData.getDescription() != null)
+            existing.setDescription(enc(newData.getDescription()));
+
+        Project updated = repo.save(existing);
+        decrypt(updated);
+        return updated;
+    }
+
+    private void encrypt(Project p) {
+        p.setTitle(enc(p.getTitle()));
+        p.setLink(enc(p.getLink()));
+        p.setDescription(enc(p.getDescription()));
+        p.setTechStack(enc(p.getTechStack()));
+    }
+
+    private void decrypt(Project p) {
+        p.setTitle(dec(p.getTitle()));
+        p.setLink(dec(p.getLink()));
+        p.setDescription(dec(p.getDescription()));
+        p.setTechStack(dec(p.getTechStack()));
+    }
+
     private String enc(String data) {
-        try {
-            return data == null ? null : encryptionUtils.encrypt(data);
-        } catch (Exception ex) {
-            throw new RuntimeException("Failed to encrypt data", ex);
-        }
+        return data == null ? null : encryptionUtils.encrypt(data);
     }
 
     private String dec(String data) {
-        try {
-            return data == null ? null : encryptionUtils.decrypt(data);
-        } catch (Exception ex) {
-            throw new RuntimeException("Failed to decrypt data", ex);
-        }
+        return data == null ? null : encryptionUtils.decrypt(data);
     }
+
 }

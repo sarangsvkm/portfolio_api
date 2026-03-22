@@ -60,6 +60,10 @@ public class ContactRequestService {
         }
     }
 
+    public List<ContactRequest> getAll() {
+        return repo.findAll();
+    }
+
     public String verifyOtp(String email, String otp) throws Exception {
         Optional<ContactRequest> existing = repo.findByEmail(email);
         if (existing.isPresent()) {

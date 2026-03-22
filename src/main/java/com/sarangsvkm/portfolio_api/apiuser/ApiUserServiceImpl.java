@@ -2,9 +2,6 @@ package com.sarangsvkm.portfolio_api.apiuser;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.sarangsvkm.portfolio_api.encryptionUtils.EncryptionUtils;
@@ -12,65 +9,70 @@ import com.sarangsvkm.portfolio_api.encryptionUtils.EncryptionUtils;
 @Service
 public class ApiUserServiceImpl implements ApiUserService {
 
-    @Autowired
-    ApiUserRepository apiUserRepository;
+    private final ApiUserRepository repo;
+    private final EncryptionUtils encryptionUtils;
 
-    @Autowired
-    EncryptionUtils encryptionUtils;
+    public ApiUserServiceImpl(ApiUserRepository repo, EncryptionUtils encryptionUtils) {
+        this.repo = repo;
+        this.encryptionUtils = encryptionUtils;
+    }
 
+    // ✅ REGISTER
     @Override
-    public ApiUser create(ApiUser apiUser) {
+    public ApiUser register(ApiUser apiUser) {
+
+        // 🔍 Check for duplicate username
+        if (repo.findByUsername(apiUser.getUsername()).isPresent()) {
+            throw new RuntimeException("Username already exists");
+        }
+
         try {
-            if (apiUser.getPassword() != null) {
-                apiUser.setPassword(encryptionUtils.encrypt(apiUser.getPassword()));
-            }
+            String encryptedPassword = encryptionUtils.encrypt(apiUser.getPassword());
+            apiUser.setPassword(encryptedPassword);
+            return repo.save(apiUser);
         } catch (Exception e) {
-            throw new RuntimeException("Error encrypting password", e);
-        }
-        return apiUserRepository.save(apiUser);
-    }
-
-    @Override
-    public ApiUser update(int userid, ApiUser apiUser) {
-        ApiUser existingApiUser = apiUserRepository.findById(userid).orElse(null);
-        if (existingApiUser != null) {
-            if (apiUser.getUsername() != null) {
-                existingApiUser.setUsername(apiUser.getUsername());
-            }
-            if (apiUser.getPassword() != null) {
-                try {
-                    existingApiUser.setPassword(encryptionUtils.encrypt(apiUser.getPassword()));
-                } catch (Exception e) {
-                    throw new RuntimeException("Error encrypting password", e);
-                }
-            }
-            if (apiUser.getRole() != null) {
-                existingApiUser.setRole(apiUser.getRole());
-            }
-            return apiUserRepository.save(existingApiUser);
-        }
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiUserResponse> deleteById(int userid) {
-        if (apiUserRepository.existsById(userid)) {
-            apiUserRepository.deleteById(userid);
-            String message = "ApiUser ID " + userid + " has been deleted successfully";
-            return ResponseEntity.ok(new ApiUserResponse(null, message));
-        } else {
-            String message = "ApiUser with ID " + userid + " not found";
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiUserResponse(null, message));
+            e.printStackTrace();
+            throw new RuntimeException("Encryption error");
         }
     }
-
+    // ✅ LOGIN
     @Override
-    public ApiUser findByUsername(String username, String Password) {
-        return apiUserRepository.findByUsername(username, Password);
+    public ApiUser login(String username, String password) {
+
+        System.out.println("🔐 LOGIN ATTEMPT — username: [" + username + "]");
+
+        ApiUser user = repo.findByUsername(username)
+                .orElseThrow(() -> {
+                    System.out.println("❌ User not found: [" + username + "]");
+                    return new RuntimeException("User not found");
+                });
+
+        System.out.println("✅ User found: [" + username + "]");
+
+        String decryptedPassword = encryptionUtils.decrypt(user.getPassword());
+        String inputPassword = password.trim();
+        String dbPassword = decryptedPassword.trim();
+
+        System.out.println("🔑 Input password:  [" + inputPassword + "]");
+        System.out.println("🔑 DB password:     [" + dbPassword + "]");
+        System.out.println("🔑 Match:           [" + inputPassword.equals(dbPassword) + "]");
+
+        if (!inputPassword.equals(dbPassword)) {
+            throw new RuntimeException("Invalid credentials");
+        }
+
+        return user;
     }
 
+    // ✅ FIND BY ID
+    @Override
     public Optional<ApiUser> findById(int userId) {
-        return apiUserRepository.findById(userId);
+        return repo.findById(userId);
     }
 
+    // ✅ DELETE
+    @Override
+    public void delete(int userId) {
+        repo.deleteById(userId);
+    }
 }

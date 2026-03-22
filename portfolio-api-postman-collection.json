@@ -1,0 +1,418 @@
+{
+	"info": {
+		"_postman_id": "7a3b4c5d-6e7f-8a9b-0c1d-2e3f4a5b6c7d",
+		"name": "Portfolio API Collection",
+		"description": "Complete collection for testing all Portfolio API endpoints. All POST/PUT methods store encrypted data in DB. All GET methods return decrypted data.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "API User (Auth)",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "register"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "login"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Profile",
+			"item": [
+				{
+					"name": "Get All Profiles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/profile",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "profile"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Profile",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\",\n    \"profile\": {\n        \"name\": \"Sarang\",\n        \"title\": \"Full Stack Developer\",\n        \"about\": \"Experienced Java developer specializing in Spring Boot.\",\n        \"email\": \"sarang@example.com\",\n        \"phone\": \"+91 9876543210\",\n        \"location\": \"India\"\n    }\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/profile",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "profile"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "PUT",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\",\n    \"profile\": {\n        \"name\": \"Sarang Updated\",\n        \"title\": \"Senior Full Stack Developer\",\n        \"about\": \"Updated bio.\",\n        \"email\": \"sarang@example.com\",\n        \"phone\": \"+91 9876543210\",\n        \"location\": \"India\"\n    }\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/profile/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "profile", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Experience",
+			"item": [
+				{
+					"name": "Get All Experience",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/experience",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "experience"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Experience",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\",\n    \"experience\": {\n        \"company\": \"Tech Corp\",\n        \"role\": \"Software Engineer\",\n        \"description\": \"Developing enterprise APIs using Spring Boot.\",\n        \"startDate\": \"2022\",\n        \"endDate\": \"Present\"\n    }\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/experience",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "experience"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Experience",
+					"request": {
+						"method": "PUT",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\",\n    \"experience\": {\n        \"role\": \"Senior Software Engineer\",\n        \"description\": \"Leading backend development.\"\n    }\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/experience/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "experience", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Education",
+			"item": [
+				{
+					"name": "Get All Education",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/education",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "education"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Education",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\",\n    \"education\": {\n        \"institution\": \"Example University\",\n        \"degree\": \"Bachelor of Technology\",\n        \"fieldOfStudy\": \"Computer Science\",\n        \"startDate\": \"2018\",\n        \"endDate\": \"2022\"\n    }\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/education",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "education"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Education",
+					"request": {
+						"method": "PUT",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\",\n    \"education\": {\n        \"degree\": \"Master of Technology\",\n        \"endDate\": \"2024\"\n    }\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/education/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "education", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Skills",
+			"item": [
+				{
+					"name": "Get All Skills",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/skills",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "skills"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Skill",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\",\n    \"skill\": {\n        \"name\": \"Java\",\n        \"level\": \"Expert\",\n        \"category\": \"Backend\"\n    }\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/skills",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "skills"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Skill",
+					"request": {
+						"method": "PUT",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\",\n    \"skill\": {\n        \"name\": \"Spring Boot\",\n        \"level\": \"Advanced\",\n        \"category\": \"Backend\"\n    }\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/skills/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "skills", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Projects",
+			"item": [
+				{
+					"name": "Get All Projects",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/projects",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "projects"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Project",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\",\n    \"project\": {\n        \"title\": \"Portfolio API\",\n        \"description\": \"A robust Spring Boot backend for a developer portfolio.\",\n        \"link\": \"https://github.com/sarangsvkm/portfolio_api\",\n        \"techStack\": \"Java, Spring Boot, PostgreSQL\"\n    }\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/projects",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "projects"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Project",
+					"request": {
+						"method": "PUT",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\",\n    \"project\": {\n        \"title\": \"Portfolio API v2\",\n        \"description\": \"Updated description.\",\n        \"techStack\": \"Java, Spring Boot, PostgreSQL, Docker\"\n    }\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/projects/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "projects", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Resume",
+			"item": [
+				{
+					"name": "Get Full Resume",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/resume",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "resume"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Full Resume",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\",\n    \"resume\": {\n        \"profile\": {\n            \"name\": \"Sarang\",\n            \"title\": \"Full Stack Developer\",\n            \"about\": \"Experienced Java developer specializing in Spring Boot.\",\n            \"email\": \"sarang@example.com\",\n            \"phone\": \"+91 9876543210\",\n            \"location\": \"India\"\n        },\n        \"experiences\": [\n            {\n                \"company\": \"Tech Corp\",\n                \"role\": \"Software Engineer\",\n                \"description\": \"Developing enterprise APIs.\",\n                \"startDate\": \"2022\",\n                \"endDate\": \"Present\"\n            }\n        ],\n        \"educations\": [\n            {\n                \"institution\": \"Example University\",\n                \"degree\": \"Bachelor of Technology\",\n                \"fieldOfStudy\": \"Computer Science\",\n                \"startDate\": \"2018\",\n                \"endDate\": \"2022\"\n            }\n        ],\n        \"skills\": [\n            {\n                \"name\": \"Java\",\n                \"level\": \"Expert\",\n                \"category\": \"Backend\"\n            }\n        ],\n        \"projects\": [\n            {\n                \"title\": \"Portfolio API\",\n                \"description\": \"A Spring Boot backend for a developer portfolio.\",\n                \"link\": \"https://github.com/sarangsvkm/portfolio_api\",\n                \"techStack\": \"Java, Spring Boot, PostgreSQL\"\n            }\n        ]\n    }\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/resume",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "resume"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Contact & OTP",
+			"item": [
+				{
+					"name": "Request OTP",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"visitor@example.com\",\n    \"phone\": \"+91 9876543210\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/contact/request-otp",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "contact", "request-otp"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify OTP",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"visitor@example.com\",\n    \"otp\": \"123456\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/contact/verify-otp",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "contact", "verify-otp"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Contact Request Report",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/contact/report",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "contact", "report"]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080/portfolioApi",
+			"type": "string"
+		}
+	]
+}

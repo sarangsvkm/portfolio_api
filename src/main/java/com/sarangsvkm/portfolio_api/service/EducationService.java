@@ -19,43 +19,65 @@ public class EducationService {
         this.encryptionUtils = encryptionUtils;
     }
 
-    // 🔐 SAVE
     public Education save(Education e) {
-
-        e.setDegree(enc(e.getDegree()));
-        e.setInstitution(enc(e.getInstitution()));
-        e.setYear(enc(e.getYear()));
-
-        return repo.save(e);
+        encrypt(e);
+        Education saved = repo.save(e);
+        decrypt(saved);
+        return saved;
     }
 
-    // 🔓 GET
     public List<Education> getAll() {
-
         List<Education> list = repo.findAll();
-
-        for (Education e : list) {
-            e.setDegree(dec(e.getDegree()));
-            e.setInstitution(dec(e.getInstitution()));
-            e.setYear(dec(e.getYear()));
-        }
-
+        list.forEach(this::decrypt);
         return list;
     }
 
+    public Education update(int id, Education newData) {
+        Education existing = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Education not found"));
+
+        if (newData.getInstitution() != null)
+            existing.setInstitution(enc(newData.getInstitution()));
+
+        if (newData.getDegree() != null)
+            existing.setDegree(enc(newData.getDegree()));
+
+        if (newData.getFieldOfStudy() != null)
+            existing.setFieldOfStudy(enc(newData.getFieldOfStudy()));
+
+        if (newData.getStartDate() != null)
+            existing.setStartDate(enc(newData.getStartDate()));
+
+        if (newData.getEndDate() != null)
+            existing.setEndDate(enc(newData.getEndDate()));
+
+        Education updated = repo.save(existing);
+        decrypt(updated);
+        return updated;
+    }
+
+    private void encrypt(Education e) {
+        e.setInstitution(enc(e.getInstitution()));
+        e.setDegree(enc(e.getDegree()));
+        e.setFieldOfStudy(enc(e.getFieldOfStudy()));
+        e.setStartDate(enc(e.getStartDate()));
+        e.setEndDate(enc(e.getEndDate()));
+    }
+
+    private void decrypt(Education e) {
+        e.setInstitution(dec(e.getInstitution()));
+        e.setDegree(dec(e.getDegree()));
+        e.setFieldOfStudy(dec(e.getFieldOfStudy()));
+        e.setStartDate(dec(e.getStartDate()));
+        e.setEndDate(dec(e.getEndDate()));
+    }
+
     private String enc(String data) {
-        try {
-            return data == null ? null : encryptionUtils.encrypt(data);
-        } catch (Exception ex) {
-            throw new RuntimeException("Failed to encrypt data", ex);
-        }
+        return data == null ? null : encryptionUtils.encrypt(data);
     }
 
     private String dec(String data) {
-        try {
-            return data == null ? null : encryptionUtils.decrypt(data);
-        } catch (Exception ex) {
-            throw new RuntimeException("Failed to decrypt data", ex);
-        }
+        return data == null ? null : encryptionUtils.decrypt(data);
     }
+
 }

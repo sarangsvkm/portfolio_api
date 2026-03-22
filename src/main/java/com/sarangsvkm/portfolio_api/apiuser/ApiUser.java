@@ -1,32 +1,21 @@
 package com.sarangsvkm.portfolio_api.apiuser;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 public class ApiUser {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column
-	private int userid;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int userid;
 
-	@Column(unique = true)
-	private String username;
+    private String username;
+    private String password;
+    private String role;
 
-	@Column
-	private String password;
-
-	@Column
-	private String role;
-
+    // getters & setters
 }

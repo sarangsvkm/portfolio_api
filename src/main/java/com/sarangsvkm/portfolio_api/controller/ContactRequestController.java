@@ -6,12 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/contact")
-@CrossOrigin
 public class ContactRequestController {
 
     private final ContactRequestService service;
@@ -22,13 +23,18 @@ public class ContactRequestController {
 
     @PostMapping("/request-otp")
     public Map<String, String> requestOtp(@RequestBody ContactRequest request) {
-        if(request.getEmail() == null || request.getEmail().isBlank()) {
+        if (request.getName() == null || request.getName().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name is required");
+        }
+        if (request.getEmail() == null || request.getEmail().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is required");
+        }
+        if (request.getPhone() == null || request.getPhone().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Phone number is required");
         }
         service.generateAndSaveOtp(request);
         Map<String, String> response = new HashMap<>();
         response.put("message", "An OTP has been sent to your email address!");
-        // We no longer return the OTP in the API response for security
         return response;
     }
 
@@ -46,5 +52,21 @@ public class ContactRequestController {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
+    }
+
+    // ── Report API ─────────────────────────────────────────────────────────────
+    @GetMapping("/report")
+    public List<Map<String, Object>> getContactRequestReport() {
+        return service.getAll().stream().map(cr -> {
+            Map<String, Object> row = new HashMap<>();
+            row.put("id",        cr.getId());
+            row.put("name",      cr.getName());
+            row.put("email",     cr.getEmail());
+            row.put("phone",     cr.getPhone());
+            row.put("verified",  cr.isVerified());
+            row.put("createdAt", cr.getCreatedAt() != null ? cr.getCreatedAt().toString() : null);
+            // otp intentionally excluded for security
+            return row;
+        }).collect(Collectors.toList());
     }
 }

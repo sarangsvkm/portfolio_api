@@ -19,45 +19,64 @@ public class ExperienceService {
         this.encryptionUtils = encryptionUtils;
     }
 
-    // 🔐 SAVE
     public Experience save(Experience e) {
-
-        e.setRole(enc(e.getRole()));
-        e.setCompany(enc(e.getCompany()));
-        e.setDuration(enc(e.getDuration()));
-        e.setDescription(enc(e.getDescription()));
-
-        return repo.save(e);
+        encrypt(e);
+        Experience saved = repo.save(e);
+        decrypt(saved);
+        return saved;
     }
 
-    // 🔓 GET
     public List<Experience> getAll() {
-
         List<Experience> list = repo.findAll();
-
-        for (Experience e : list) {
-            e.setRole(dec(e.getRole()));
-            e.setCompany(dec(e.getCompany()));
-            e.setDuration(dec(e.getDuration()));
-            e.setDescription(dec(e.getDescription()));
-        }
-
+        list.forEach(this::decrypt);
         return list;
     }
 
+    public Experience update(int id, Experience newData) {
+        Experience existing = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Experience not found"));
+
+        if (newData.getCompany() != null)
+            existing.setCompany(enc(newData.getCompany()));
+
+        if (newData.getRole() != null)
+            existing.setRole(enc(newData.getRole()));
+
+        if (newData.getStartDate() != null)
+            existing.setStartDate(enc(newData.getStartDate()));
+
+        if (newData.getEndDate() != null)
+            existing.setEndDate(enc(newData.getEndDate()));
+
+        if (newData.getDescription() != null)
+            existing.setDescription(enc(newData.getDescription()));
+
+        Experience updated = repo.save(existing);
+        decrypt(updated);
+        return updated;
+    }
+
+    private void encrypt(Experience e) {
+        e.setCompany(enc(e.getCompany()));
+        e.setRole(enc(e.getRole()));
+        e.setStartDate(enc(e.getStartDate()));
+        e.setEndDate(enc(e.getEndDate()));
+        e.setDescription(enc(e.getDescription()));
+    }
+
+    private void decrypt(Experience e) {
+        e.setCompany(dec(e.getCompany()));
+        e.setRole(dec(e.getRole()));
+        e.setStartDate(dec(e.getStartDate()));
+        e.setEndDate(dec(e.getEndDate()));
+        e.setDescription(dec(e.getDescription()));
+    }
+
     private String enc(String data) {
-        try {
-            return data == null ? null : encryptionUtils.encrypt(data);
-        } catch (Exception e) {
-            throw new RuntimeException("Error encrypting data", e);
-        }
+        return data == null ? null : encryptionUtils.encrypt(data);
     }
 
     private String dec(String data) {
-        try {
-            return data == null ? null : encryptionUtils.decrypt(data);
-        } catch (Exception e) {
-            throw new RuntimeException("Error decrypting data", e);
-        }
+        return data == null ? null : encryptionUtils.decrypt(data);
     }
 }
