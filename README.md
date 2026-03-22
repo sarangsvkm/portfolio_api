@@ -16,11 +16,12 @@ The API is built around several core entities mapping directly to the relational
 2. **Projects**: Showcase of professional or personal projects.
 3. **Education**: Academic background and achievements.
 4. **Experience**: Work history and professional roles.
-5. **Skills**: Technical or soft skills acquired.
 6. **API User**: Internal users to handle the authentication layer, ensuring that portfolio details are securely managed.
+7. **Contact Request**: Handles visitor lead generation and OTP-based verification for revealing private contact details.
 
 ## Security & Features
 
+- **OTP Contact Revealer**: Gated endpoint that safely reveals your personal phone number only after visitors provide their details and verify a One-Time Password.
 - **Header-Based Authentication**: All `POST` endpoints are secured. To create or update records, clients must provide `username` and `password` as HTTP Headers (`@RequestHeader`).
 - **Data Encryption**: The service layer seamlessly utilizes `EncryptionUtils` to encrypt sensitive entity features (such as `password`, `degree`, `institution`, project `description`, etc.) upon saving, and then automatically decrypts them during `GET` retrieval.
 - **Spring Boot Ecosystem**: Utilizes Spring Web, Spring Data JPA, and Spring Boot Starters for reliable REST API development.
