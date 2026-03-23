@@ -13,12 +13,15 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
+import com.sarangsvkm.portfolio_api.entity.SystemConfig;
+import com.sarangsvkm.portfolio_api.repository.SystemConfigRepository;
+
 @Configuration
 public class SecurityConfig {
 
-    private final com.sarangsvkm.portfolio_api.repository.SystemConfigRepository configRepo;
+    private final SystemConfigRepository configRepo;
 
-    public SecurityConfig(com.sarangsvkm.portfolio_api.repository.SystemConfigRepository configRepo) {
+    public SecurityConfig(SystemConfigRepository configRepo) {
         this.configRepo = configRepo;
     }
 
@@ -33,7 +36,7 @@ public class SecurityConfig {
 
         // ✅ Fetch allowed origins from database, with localhost fallbacks
         String rawOrigins = configRepo.findByConfigKey("cors.allowed-origins")
-                .map(com.sarangsvkm.portfolio_api.entity.SystemConfig::getConfigValue)
+                .map(SystemConfig::getConfigValue)
                 .orElse("http://localhost,http://localhost:3000,http://localhost:5173,http://localhost:8080,http://127.0.0.1,http://127.0.0.1:3000,http://127.0.0.1:5173,http://192.168.68.54,http://192.168.68.54:3000,http://192.168.68.54:5173");
 
         config.setAllowedOrigins(Arrays.asList(rawOrigins.split(",")));

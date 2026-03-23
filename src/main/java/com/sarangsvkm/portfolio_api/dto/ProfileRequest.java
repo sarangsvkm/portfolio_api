@@ -12,6 +12,4 @@ public class ProfileRequest {
     private String username;
     private String password;
     private Profile profile;
-
-    // getters and setters
 }
