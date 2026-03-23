@@ -1,5 +1,6 @@
 # Ignore build artifacts
 target/
+.env
 *.jar
 *.war
 *.ear
