@@ -1,19 +1,11 @@
 package com.sarangsvkm.portfolio_api.controller;
 
-import com.sarangsvkm.portfolio_api.apiuser.ApiUserService;
 import com.sarangsvkm.portfolio_api.entity.SystemConfig;
 import com.sarangsvkm.portfolio_api.repository.SystemConfigRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -21,61 +13,32 @@ import java.util.Optional;
 public class SystemConfigController {
 
     private final SystemConfigRepository repository;
-    private final ApiUserService apiUserService;
 
-    public SystemConfigController(SystemConfigRepository repository, ApiUserService apiUserService) {
+    public SystemConfigController(SystemConfigRepository repository) {
         this.repository = repository;
-        this.apiUserService = apiUserService;
     }
 
+    // ✅ GET ALL (Auth handled by Filter)
     @GetMapping
-    public ResponseEntity<?> getAllConfigs(
-            @RequestHeader("username") String username,
-            @RequestHeader("password") String password) {
-        
-        try {
-            apiUserService.login(username, password);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-        }
-        
+    public ResponseEntity<List<SystemConfig>> getAllConfigs() {
         return ResponseEntity.ok(repository.findAll());
     }
 
+    // ✅ SAVE/UPDATE (Auth handled by Filter)
     @PostMapping
-    public ResponseEntity<?> saveOrUpdateConfig(
-            @RequestHeader("username") String username,
-            @RequestHeader("password") String password,
-            @RequestBody SystemConfig config) {
-        
-        try {
-            apiUserService.login(username, password);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-        }
-
+    public ResponseEntity<SystemConfig> saveOrUpdateConfig(@RequestBody SystemConfig config) {
         Optional<SystemConfig> existing = repository.findByConfigKey(config.getConfigKey());
         if (existing.isPresent()) {
             SystemConfig entry = existing.get();
             entry.setConfigValue(config.getConfigValue());
             return ResponseEntity.ok(repository.save(entry));
         }
-        
         return ResponseEntity.ok(repository.save(config));
     }
 
+    // ✅ DELETE (Auth handled by Filter)
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteConfig(
-            @RequestHeader("username") String username,
-            @RequestHeader("password") String password,
-            @PathVariable Long id) {
-        
-        try {
-            apiUserService.login(username, password);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-        }
-
+    public ResponseEntity<Void> deleteConfig(@PathVariable Long id) {
         if (id != null) {
             repository.deleteById(id);
         }

@@ -2,8 +2,6 @@ package com.sarangsvkm.portfolio_api.controller;
 
 import com.sarangsvkm.portfolio_api.entity.ContactRequest;
 import com.sarangsvkm.portfolio_api.service.ContactRequestService;
-import com.sarangsvkm.portfolio_api.apiuser.ApiUserService;
-import com.sarangsvkm.portfolio_api.dto.DeleteRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +17,12 @@ import java.util.stream.Collectors;
 public class ContactRequestController {
 
     private final ContactRequestService service;
-    private final ApiUserService apiUserService;
 
-    public ContactRequestController(ContactRequestService service, ApiUserService apiUserService) {
+    public ContactRequestController(ContactRequestService service) {
         this.service = service;
-        this.apiUserService = apiUserService;
     }
 
+    // ✅ PUBLIC
     @PostMapping("/request-otp")
     public Map<String, String> requestOtp(@RequestBody ContactRequest request) {
         if (request.getName() == null || request.getName().isBlank()) {
@@ -43,11 +40,11 @@ public class ContactRequestController {
         return response;
     }
 
+    // ✅ PUBLIC
     @PostMapping("/verify-otp")
     public Map<String, String> verifyOtp(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
         String otp = payload.get("otp");
-
         try {
             String phoneNumber = service.verifyOtp(email, otp);
             Map<String, String> response = new HashMap<>();
@@ -59,7 +56,7 @@ public class ContactRequestController {
         }
     }
 
-    // ── Report API ─────────────────────────────────────────────────────────────
+    // ✅ PROTECTED (Auth by Filter)
     @GetMapping("/report")
     public List<Map<String, Object>> getContactRequestReport() {
         return service.getAll().stream().map(cr -> {
@@ -70,21 +67,14 @@ public class ContactRequestController {
             row.put("phone",     cr.getPhone());
             row.put("verified",  cr.isVerified());
             row.put("createdAt", cr.getCreatedAt() != null ? cr.getCreatedAt().toString() : null);
-            // otp intentionally excluded for security
             return row;
         }).collect(Collectors.toList());
     }
 
+    // ✅ PROTECTED (Auth by Filter)
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id,
-            @RequestBody DeleteRequest request) {
-
-        try {
-            apiUserService.login(request.getUsername(), request.getPassword());
-            service.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

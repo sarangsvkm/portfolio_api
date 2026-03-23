@@ -1,114 +1,46 @@
 package com.sarangsvkm.portfolio_api.controller;
 
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+
 import com.sarangsvkm.portfolio_api.service.EducationService;
 import com.sarangsvkm.portfolio_api.entity.Education;
 import java.util.List;
-import com.sarangsvkm.portfolio_api.apiuser.ApiUserService;
-import com.sarangsvkm.portfolio_api.dto.EducationRequest;
-import com.sarangsvkm.portfolio_api.dto.DeleteRequest;
 
 @RestController
 @RequestMapping("/api/education")
 public class EducationController {
 
     private final EducationService service;
-    private final ApiUserService apiUserService;
 
-    public EducationController(EducationService service, ApiUserService apiUserService) {
+    public EducationController(EducationService service) {
         this.service = service;
-        this.apiUserService = apiUserService;
     }
 
-    // ✅ SAVE EDUCATION (with login check)
+    // ✅ SAVE EDUCATION (Auth handled by Filter)
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody EducationRequest request) {
-
-        try {
-            // 🔐 Authenticate user
-            apiUserService.login(
-                    request.getUsername(),
-                    request.getPassword()
-            );
-
-            Education savedEducation = service.save(request.getEducation());
-
-            return ResponseEntity.ok(savedEducation);
-
-        } catch (RuntimeException e) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body("Invalid credentials");
-
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error saving education");
-        }
+    public ResponseEntity<Education> save(@RequestBody Education education) {
+        Education saved = service.save(education);
+        return ResponseEntity.ok(saved);
     }
 
+    // ✅ UPDATE EDUCATION (Auth handled by Filter)
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id,
-            @RequestBody EducationRequest request) {
-
-        try {
-            // 🔐 Authenticate
-            apiUserService.login(
-                    request.getUsername(),
-                    request.getPassword()
-            );
-
-            Education updated = service.update(id, request.getEducation());
-
-            return ResponseEntity.ok(updated);
-
-        } catch (RuntimeException e) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body("Invalid credentials");
-
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error updating education");
-        }
+    public ResponseEntity<Education> update(@PathVariable Long id, @RequestBody Education education) {
+        Education updated = service.update(id, education);
+        return ResponseEntity.ok(updated);
     }
-    // ✅ GET ALL EDUCATION
+
+    // ✅ GET ALL EDUCATION (Public)
     @GetMapping
     public ResponseEntity<List<Education>> getAll() {
-
-        try {
-            List<Education> list = service.getAll();
-            return ResponseEntity.ok(list);
-
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
-        }
+        return ResponseEntity.ok(service.getAll());
     }
+
+    // ✅ DELETE EDUCATION (Auth handled by Filter)
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id,
-            @RequestBody DeleteRequest request) {
-
-        try {
-            apiUserService.login(request.getUsername(), request.getPassword());
-            service.delete(id);
-            return ResponseEntity.noContent().build();
-
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting education");
-        }
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

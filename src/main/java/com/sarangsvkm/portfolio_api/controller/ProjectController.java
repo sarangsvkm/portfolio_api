@@ -1,113 +1,46 @@
 package com.sarangsvkm.portfolio_api.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import com.sarangsvkm.portfolio_api.entity.Project;
 import com.sarangsvkm.portfolio_api.service.ProjectService;
-import com.sarangsvkm.portfolio_api.apiuser.ApiUserService;
-import com.sarangsvkm.portfolio_api.dto.DeleteRequest;
 
 @RestController
 @RequestMapping("/api/projects")
 public class ProjectController {
 
     private final ProjectService service;
-    private final ApiUserService apiUserService;
 
-    public ProjectController(ProjectService service, ApiUserService apiUserService) {
+    public ProjectController(ProjectService service) {
         this.service = service;
-        this.apiUserService = apiUserService;
     }
 
-    // ✅ SAVE PROJECT (with login check)
+    // ✅ SAVE PROJECT (Auth handled by Filter)
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody ProjectRequest request) {
-
-        try {
-            // 🔐 Authenticate user
-            apiUserService.login(
-                    request.getUsername(),
-                    request.getPassword());
-
-            Project saved = service.save(request.getProject());
-
-            return ResponseEntity.ok(saved);
-
-        } catch (RuntimeException e) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body("Invalid credentials");
-
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error saving project");
-        }
+    public ResponseEntity<Project> save(@RequestBody Project project) {
+        Project saved = service.save(project);
+        return ResponseEntity.ok(saved);
     }
 
+    // ✅ UPDATE PROJECT (Auth handled by Filter)
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id,
-            @RequestBody ProjectRequest request) {
-
-        try {
-            apiUserService.login(
-                    request.getUsername(),
-                    request.getPassword());
-
-            Project updated = service.update(id, request.getProject());
-
-            return ResponseEntity.ok(updated);
-
-        } catch (RuntimeException e) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body("Invalid credentials");
-
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error updating project");
-        }
+    public ResponseEntity<Project> update(@PathVariable Long id, @RequestBody Project project) {
+        Project updated = service.update(id, project);
+        return ResponseEntity.ok(updated);
     }
 
-    // ✅ GET ALL PROJECTS
+    // ✅ GET ALL PROJECTS (Public)
     @GetMapping
     public ResponseEntity<List<Project>> getAll() {
-
-        try {
-            List<Project> list = service.getAll();
-            return ResponseEntity.ok(list);
-
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
-        }
+        return ResponseEntity.ok(service.getAll());
     }
 
+    // ✅ DELETE PROJECT (Auth handled by Filter)
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id,
-            @RequestBody DeleteRequest request) {
-
-        try {
-            apiUserService.login(request.getUsername(), request.getPassword());
-            service.delete(id);
-            return ResponseEntity.noContent().build();
-
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting project");
-        }
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

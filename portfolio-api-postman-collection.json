@@ -1,8 +1,8 @@
 {
 	"info": {
 		"_postman_id": "7a3b4c5d-6e7f-8a9b-0c1d-2e3f4a5b6c7d",
-		"name": "Portfolio API Collection",
-		"description": "Complete collection for testing all Portfolio API endpoints. All POST/PUT methods store encrypted data in DB. All GET methods return decrypted data. Images are stored in a separate table.",
+		"name": "Portfolio API Collection (Simplified)",
+		"description": "Updated collection using Header-based authentication (X-Admin-Username, X-Admin-Password). All POST/PUT/DELETE requests now use raw entities without wrappers.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -10,7 +10,7 @@
 			"name": "API User (Auth)",
 			"item": [
 				{
-					"name": "Register User",
+					"name": "Register Admin",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -24,7 +24,7 @@
 					}
 				},
 				{
-					"name": "Login User",
+					"name": "Login Admin",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -40,76 +40,46 @@
 			]
 		},
 		{
-			"name": "Profile & Assets",
+			"name": "Profile",
 			"item": [
 				{
-					"name": "Get All Profiles",
+					"name": "Get Profiles",
 					"request": {
 						"method": "GET",
 						"url": "{{baseUrl}}/api/profile"
 					}
 				},
 				{
-					"name": "Update Profile Assets (URLs)",
+					"name": "Update Profile",
 					"request": {
 						"method": "PUT",
 						"header": [
-							{ "key": "Content-Type", "value": "application/json" }
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "X-Admin-Username", "value": "admin" },
+							{ "key": "X-Admin-Password", "value": "password" }
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\",\n    \"profile\": {\n        \"name\": \"Sarang\",\n        \"imageUrl\": \"/api/profile/image/1\",\n        \"bannerUrl\": \"https://images.unsplash.com/photo-1506744038136-46273834b3fb\",\n        \"resumeUrl\": \"/api/upload/view/resume.pdf\"\n    }\n}"
+							"raw": "{\n    \"name\": \"Sarang\",\n    \"imageUrl\": \"/api/profile/image/1\",\n    \"bannerUrl\": \"https://images.unsplash.com/photo-1506744038136-46273834b3fb\",\n    \"resumeUrl\": \"/api/upload/view/resume.pdf\"\n}"
 						},
 						"url": { "raw": "{{baseUrl}}/api/profile/1", "host": ["{{baseUrl}}"], "path": ["api", "profile", "1"] }
 					}
 				},
 				{
-					"name": "Upload Image to DB (Separate Table)",
+					"name": "Upload Image to DB",
 					"request": {
 						"method": "POST",
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{ "key": "username", "value": "admin", "type": "text" },
-								{ "key": "password", "value": "password", "type": "text" },
-								{ "key": "file", "type": "file", "src": [] }
-							]
-						},
-						"url": { "raw": "{{baseUrl}}/api/profile/image/1", "host": ["{{baseUrl}}"], "path": ["api", "profile", "image", "1"] }
-					}
-				},
-				{
-					"name": "View Image from DB",
-					"request": {
-						"method": "GET",
-						"url": "{{baseUrl}}/api/profile/image/1"
-					}
-				},
-				{
-					"name": "Delete Image from DB",
-					"request": {
-						"method": "DELETE",
 						"header": [
-							{ "key": "Content-Type", "value": "application/json" }
+							{ "key": "X-Admin-Username", "value": "admin" },
+							{ "key": "X-Admin-Password", "value": "password" }
 						],
 						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}"
-						},
-						"url": { "raw": "{{baseUrl}}/api/profile/image/1", "host": ["{{baseUrl}}"], "path": ["api", "profile", "image", "1"] }
-					}
-				},
-				{
-					"name": "Upload to Local Disk (Alternative)",
-					"request": {
-						"method": "POST",
-						"body": {
 							"mode": "formdata",
 							"formdata": [
 								{ "key": "file", "type": "file", "src": [] }
 							]
 						},
-						"url": { "raw": "{{baseUrl}}/api/upload", "host": ["{{baseUrl}}"], "path": ["api", "upload"] }
+						"url": { "raw": "{{baseUrl}}/api/profile/image/1", "host": ["{{baseUrl}}"], "path": ["api", "profile", "image", "1"] }
 					}
 				}
 			]
@@ -118,7 +88,7 @@
 			"name": "Resume (Full)",
 			"item": [
 				{
-					"name": "Get Full Resume",
+					"name": "Get Resume",
 					"request": {
 						"method": "GET",
 						"url": "{{baseUrl}}/api/resume"
@@ -129,11 +99,13 @@
 					"request": {
 						"method": "POST",
 						"header": [
-							{ "key": "Content-Type", "value": "application/json" }
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "X-Admin-Username", "value": "admin" },
+							{ "key": "X-Admin-Password", "value": "password" }
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\",\n    \"resume\": {\n        \"profile\": {\n            \"name\": \"Sarang\",\n            \"imageUrl\": \"/api/profile/image/1\"\n        },\n        \"experiences\": [],\n        \"educations\": [],\n        \"skills\": [],\n        \"projects\": []\n    }\n}"
+							"raw": "{\n    \"profile\": {\n        \"name\": \"Sarang\",\n        \"imageUrl\": \"/api/profile/image/1\"\n    },\n    \"experiences\": [\n        {\n            \"company\": \"Google\",\n            \"role\": \"Dev\"\n        }\n    ],\n    \"educations\": [],\n    \"skills\": [],\n    \"projects\": []\n}"
 						},
 						"url": { "raw": "{{baseUrl}}/api/resume", "host": ["{{baseUrl}}"], "path": ["api", "resume"] }
 					}
@@ -141,63 +113,65 @@
 			]
 		},
 		{
-			"name": "Standalone Entities",
+			"name": "Entities (Standalone)",
 			"item": [
-				{
-					"name": "Experience",
-					"item": [
-						{ "name": "Get All", "request": { "method": "GET", "url": "{{baseUrl}}/api/experience" } },
-						{ "name": "Delete", "request": { "method": "DELETE", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}" }, "url": "{{baseUrl}}/api/experience/1" } }
-					]
-				},
 				{
 					"name": "Education",
 					"item": [
-						{ "name": "Get All", "request": { "method": "GET", "url": "{{baseUrl}}/api/education" } },
-						{ "name": "Delete", "request": { "method": "DELETE", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}" }, "url": "{{baseUrl}}/api/education/1" } }
-					]
-				},
-				{
-					"name": "Skills",
-					"item": [
-						{ "name": "Get All", "request": { "method": "GET", "url": "{{baseUrl}}/api/skills" } },
-						{ "name": "Delete", "request": { "method": "DELETE", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}" }, "url": "{{baseUrl}}/api/skills/1" } }
+						{
+							"name": "Add Education",
+							"request": {
+								"method": "POST",
+								"header": [
+									{ "key": "Content-Type", "value": "application/json" },
+									{ "key": "X-Admin-Username", "value": "admin" },
+									{ "key": "X-Admin-Password", "value": "password" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"institution\": \"MIT\",\n    \"degree\": \"B.S. Computer Science\"\n}"
+								},
+								"url": "{{baseUrl}}/api/education"
+							}
+						},
+						{
+							"name": "Delete Education",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{ "key": "X-Admin-Username", "value": "admin" },
+									{ "key": "X-Admin-Password", "value": "password" }
+								],
+								"url": "{{baseUrl}}/api/education/1"
+							}
+						}
 					]
 				},
 				{
 					"name": "Projects",
 					"item": [
-						{ "name": "Get All", "request": { "method": "GET", "url": "{{baseUrl}}/api/projects" } },
-						{ "name": "Delete", "request": { "method": "DELETE", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}" }, "url": "{{baseUrl}}/api/projects/1" } }
+						{
+							"name": "Add Project",
+							"request": {
+								"method": "POST",
+								"header": [
+									{ "key": "Content-Type", "value": "application/json" },
+									{ "key": "X-Admin-Username", "value": "admin" },
+									{ "key": "X-Admin-Password", "value": "password" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Portfolio API\",\n    \"description\": \"Advanced backend\"\n}"
+								},
+								"url": "{{baseUrl}}/api/projects"
+							}
+						}
 					]
-				}
-			]
-		},
-		{
-			"name": "Contact & Config",
-			"item": [
-				{
-					"name": "Contact Report",
-					"request": {
-						"method": "GET",
-						"url": "{{baseUrl}}/api/contact/report"
-					}
-				},
-				{
-					"name": "System Config",
-					"request": {
-						"method": "GET",
-						"header": [
-							{ "key": "username", "value": "admin" },
-							{ "key": "password", "value": "password" }
-						],
-						"url": { "raw": "{{baseUrl}}/api/config", "host": ["{{baseUrl}}"], "path": ["api", "config"] }
-					}
 				}
 			]
 		}
 	],
 	"variable": [
-		{ "key": "baseUrl", "value": "http://localhost:8080", "type": "string" }
+		{ "key": "baseUrl", "value": "http://localhost:8080/portfolioApi", "type": "string" }
 	]
 }
