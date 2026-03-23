@@ -20,11 +20,12 @@ import com.sarangsvkm.portfolio_api.repository.SystemConfigRepository;
 @Configuration
 public class SecurityConfig {
 
-    private final SystemConfigRepository configRepo;
     private final AdminAuthFilter adminAuthFilter;
 
-    public SecurityConfig(SystemConfigRepository configRepo, AdminAuthFilter adminAuthFilter) {
-        this.configRepo = configRepo;
+    @org.springframework.beans.factory.annotation.Value("${cors.allowed-origins}")
+    private String allowedOrigins;
+
+    public SecurityConfig(AdminAuthFilter adminAuthFilter) {
         this.adminAuthFilter = adminAuthFilter;
     }
 
@@ -37,8 +38,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // ✅ Allow all origins during development to avoid port mismatches
-        config.setAllowedOriginPatterns(List.of("*"));
+        // ✅ Allow origins from properties (supports environment variables)
+        config.setAllowedOriginPatterns(Arrays.asList(allowedOrigins.split(",")));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         
         // 👋 EXPLICITLY allow ALL headers to avoid 403 Forbidden with custom headers

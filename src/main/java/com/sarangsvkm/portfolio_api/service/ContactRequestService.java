@@ -14,17 +14,18 @@ import java.util.List;
 @SuppressWarnings("null")
 public class ContactRequestService {
 
+    @org.springframework.beans.factory.annotation.Value("${spring.mail.username}")
+    private String fromEmail;
+
     private final ContactRequestRepository repo;
     private final ProfileService profileService;
     private final JavaMailSender mailSender;
-    private final com.sarangsvkm.portfolio_api.repository.SystemConfigRepository configRepo;
 
     public ContactRequestService(ContactRequestRepository repo, ProfileService profileService,
-            JavaMailSender mailSender, com.sarangsvkm.portfolio_api.repository.SystemConfigRepository configRepo) {
+            JavaMailSender mailSender) {
         this.repo = repo;
         this.profileService = profileService;
         this.mailSender = mailSender;
-        this.configRepo = configRepo;
     }
 
     public String generateAndSaveOtp(ContactRequest request) {
@@ -58,9 +59,6 @@ public class ContactRequestService {
 
     private void sendOtpEmail(String toEmail, String name, String otp) {
         try {
-            String fromEmail = configRepo.findByConfigKey("spring.mail.username")
-                    .map(com.sarangsvkm.portfolio_api.entity.SystemConfig::getConfigValue)
-                    .orElse("sarangsvkmsuperuser@gmail.com");
 
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
