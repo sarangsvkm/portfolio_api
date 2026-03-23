@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -77,7 +76,9 @@ public class SystemConfigController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
 
-        repository.deleteById(id);
+        if (id != null) {
+            repository.deleteById(id);
+        }
         return ResponseEntity.noContent().build();
     }
 }

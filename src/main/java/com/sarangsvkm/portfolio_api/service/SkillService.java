@@ -8,6 +8,7 @@ import com.sarangsvkm.portfolio_api.entity.Skill;
 import com.sarangsvkm.portfolio_api.repository.SkillRepository;
 
 @Service
+@SuppressWarnings("null")
 public class SkillService {
 
     private final SkillRepository repo;
@@ -19,6 +20,7 @@ public class SkillService {
     }
 
     public Skill save(Skill s) {
+        if (s == null) throw new IllegalArgumentException("Skill cannot be null");
         encrypt(s);
         Skill saved = repo.save(s);
         decrypt(saved);
@@ -31,7 +33,8 @@ public class SkillService {
         return list;
     }
 
-    public Skill update(int id, Skill newData) {
+    public Skill update(Long id, Skill newData) {
+        if (id == null) throw new IllegalArgumentException("ID cannot be null");
         Skill existing = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Skill not found"));
 
@@ -67,5 +70,11 @@ public class SkillService {
 
     private String dec(String data) {
         return data == null ? null : encryptionUtils.decrypt(data);
+    }
+
+    public void delete(Long id) {
+        if (id != null) {
+            repo.deleteById(id);
+        }
     }
 }

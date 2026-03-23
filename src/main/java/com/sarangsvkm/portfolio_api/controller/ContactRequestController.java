@@ -2,7 +2,10 @@ package com.sarangsvkm.portfolio_api.controller;
 
 import com.sarangsvkm.portfolio_api.entity.ContactRequest;
 import com.sarangsvkm.portfolio_api.service.ContactRequestService;
+import com.sarangsvkm.portfolio_api.apiuser.ApiUserService;
+import com.sarangsvkm.portfolio_api.dto.DeleteRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -16,9 +19,11 @@ import java.util.stream.Collectors;
 public class ContactRequestController {
 
     private final ContactRequestService service;
+    private final ApiUserService apiUserService;
 
-    public ContactRequestController(ContactRequestService service) {
+    public ContactRequestController(ContactRequestService service, ApiUserService apiUserService) {
         this.service = service;
+        this.apiUserService = apiUserService;
     }
 
     @PostMapping("/request-otp")
@@ -68,5 +73,18 @@ public class ContactRequestController {
             // otp intentionally excluded for security
             return row;
         }).collect(Collectors.toList());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id,
+            @RequestBody DeleteRequest request) {
+
+        try {
+            apiUserService.login(request.getUsername(), request.getPassword());
+            service.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 }

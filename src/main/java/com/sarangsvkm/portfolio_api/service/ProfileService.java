@@ -1,27 +1,32 @@
 package com.sarangsvkm.portfolio_api.service;
 
 import java.util.List;
-
 import org.springframework.stereotype.Service;
 
 import com.sarangsvkm.portfolio_api.encryptionUtils.EncryptionUtils;
 import com.sarangsvkm.portfolio_api.entity.Profile;
+import com.sarangsvkm.portfolio_api.entity.SocialMedia;
 import com.sarangsvkm.portfolio_api.repository.ProfileRepository;
+import com.sarangsvkm.portfolio_api.repository.SocialMediaRepository;
 
 @Service
+@SuppressWarnings("null")
 public class ProfileService {
 
     private final ProfileRepository repo;
+    private final SocialMediaRepository socialMediaRepo;
     private final EncryptionUtils encryptionUtils;
 
-    public ProfileService(ProfileRepository repo, EncryptionUtils encryptionUtils) {
+    public ProfileService(ProfileRepository repo, SocialMediaRepository socialMediaRepo, EncryptionUtils encryptionUtils) {
         this.repo = repo;
+        this.socialMediaRepo = socialMediaRepo;
         this.encryptionUtils = encryptionUtils;
     }
 
     // 🔐 SAVE (Encrypt)
     public Profile save(Profile p) throws Exception {
-
+        if (p == null) throw new IllegalArgumentException("Profile cannot be null");
+        
         p.setName(enc(p.getName()));
         p.setTitle(enc(p.getTitle()));
         p.setAbout(enc(p.getAbout()));
@@ -29,14 +34,19 @@ public class ProfileService {
         p.setPhone(enc(p.getPhone()));
         p.setLocation(enc(p.getLocation()));
 
-        return repo.save(p); // ✅ return entity
+        if (p.getSocialMediaLinks() != null) {
+            for (SocialMedia sm : p.getSocialMediaLinks()) {
+                sm.setUrl(enc(sm.getUrl()));
+                sm.setProfile(p);
+            }
+        }
+
+        return repo.save(p);
     }
 
     // 🔓 GET ALL (Decrypt)
     public List<Profile> getAll() throws Exception {
-
         List<Profile> list = repo.findAll();
-
         for (Profile p : list) {
             p.setName(dec(p.getName()));
             p.setTitle(dec(p.getTitle()));
@@ -44,49 +54,64 @@ public class ProfileService {
             p.setEmail(dec(p.getEmail()));
             p.setPhone(dec(p.getPhone()));
             p.setLocation(dec(p.getLocation()));
-        }
 
+            List<SocialMedia> links = p.getSocialMediaLinks();
+            if (links != null) {
+                for (SocialMedia sm : links) {
+                    sm.setUrl(dec(sm.getUrl()));
+                }
+            }
+        }
         return list;
     }
 
-    // 🔧 Utility methods
+    public Profile update(Long id, Profile newData) {
+        if (id == null) throw new IllegalArgumentException("ID cannot be null");
+        
+        Profile existing = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Profile not found"));
+
+        try {
+            if (newData.getName() != null) existing.setName(enc(newData.getName()));
+            if (newData.getTitle() != null) existing.setTitle(enc(newData.getTitle()));
+            if (newData.getEmail() != null) existing.setEmail(enc(newData.getEmail()));
+            if (newData.getPhone() != null) existing.setPhone(enc(newData.getPhone()));
+            if (newData.getLocation() != null) existing.setLocation(enc(newData.getLocation()));
+            if (newData.getAbout() != null) existing.setAbout(enc(newData.getAbout()));
+
+            if (newData.getSocialMediaLinks() != null) {
+                for (SocialMedia sm : newData.getSocialMediaLinks()) {
+                    sm.setUrl(enc(sm.getUrl()));
+                    sm.setProfile(existing);
+                }
+                existing.getSocialMediaLinks().clear();
+                existing.getSocialMediaLinks().addAll(newData.getSocialMediaLinks());
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error updating profile");
+        }
+
+        return repo.save(existing);
+    }
+
+    public void delete(Long id) {
+        if (id != null) {
+            repo.deleteById(id);
+        }
+    }
+
+    public void deleteSocialMedia(Long id) {
+        if (id != null) {
+            socialMediaRepo.deleteById(id);
+        }
+    }
+
     private String enc(String data) throws Exception {
         return data == null ? null : encryptionUtils.encrypt(data);
     }
 
     private String dec(String data) throws Exception {
         return data == null ? null : encryptionUtils.decrypt(data);
-    }
-
-    public Profile update(int id, Profile newData) {
-
-        Profile existing = repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Profile not found"));
-
-        try {
-            if (newData.getName() != null)
-                existing.setName(enc(newData.getName()));
-
-            if (newData.getTitle() != null)
-                existing.setTitle(enc(newData.getTitle()));
-
-            if (newData.getEmail() != null)
-                existing.setEmail(enc(newData.getEmail()));
-
-            if (newData.getPhone() != null)
-                existing.setPhone(enc(newData.getPhone()));
-
-            if (newData.getLocation() != null)
-                existing.setLocation(enc(newData.getLocation()));
-
-            if (newData.getAbout() != null)
-                existing.setAbout(enc(newData.getAbout()));
-
-        } catch (Exception e) {
-            e.printStackTrace(); // 🔍 debug
-            throw new RuntimeException("Error updating profile");
-        }
-
-        return repo.save(existing);
     }
 }

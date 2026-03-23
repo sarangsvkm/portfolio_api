@@ -1,7 +1,5 @@
 package com.sarangsvkm.portfolio_api.service;
 
-
-
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -10,6 +8,7 @@ import com.sarangsvkm.portfolio_api.entity.Project;
 import com.sarangsvkm.portfolio_api.repository.ProjectRepository;
 
 @Service
+@SuppressWarnings("null")
 public class ProjectService {
 
     private final ProjectRepository repo;
@@ -21,6 +20,7 @@ public class ProjectService {
     }
 
     public Project save(Project p) {
+        if (p == null) throw new IllegalArgumentException("Project cannot be null");
         encrypt(p);
         Project saved = repo.save(p);
         decrypt(saved);
@@ -33,7 +33,8 @@ public class ProjectService {
         return list;
     }
 
-    public Project update(int id, Project newData) {
+    public Project update(Long id, Project newData) {
+        if (id == null) throw new IllegalArgumentException("ID cannot be null");
         Project existing = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Project not found"));
 
@@ -45,6 +46,9 @@ public class ProjectService {
 
         if (newData.getDescription() != null)
             existing.setDescription(enc(newData.getDescription()));
+            
+        if (newData.getTechStack() != null)
+            existing.setTechStack(enc(newData.getTechStack()));
 
         Project updated = repo.save(existing);
         decrypt(updated);
@@ -73,4 +77,9 @@ public class ProjectService {
         return data == null ? null : encryptionUtils.decrypt(data);
     }
 
+    public void delete(Long id) {
+        if (id != null) {
+            repo.deleteById(id);
+        }
+    }
 }

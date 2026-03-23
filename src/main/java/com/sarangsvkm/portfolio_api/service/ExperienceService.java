@@ -1,6 +1,5 @@
 package com.sarangsvkm.portfolio_api.service;
 
-
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -20,6 +19,7 @@ public class ExperienceService {
     }
 
     public Experience save(Experience e) {
+        if (e == null) throw new IllegalArgumentException("Experience cannot be null");
         encrypt(e);
         Experience saved = repo.save(e);
         decrypt(saved);
@@ -32,7 +32,8 @@ public class ExperienceService {
         return list;
     }
 
-    public Experience update(int id, Experience newData) {
+    public Experience update(Long id, Experience newData) {
+        if (id == null) throw new IllegalArgumentException("ID cannot be null");
         Experience existing = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Experience not found"));
 
@@ -51,7 +52,8 @@ public class ExperienceService {
         if (newData.getDescription() != null)
             existing.setDescription(enc(newData.getDescription()));
 
-        Experience updated = repo.save(existing);
+        @SuppressWarnings("null")
+		Experience updated = repo.save(existing);
         decrypt(updated);
         return updated;
     }
@@ -78,5 +80,11 @@ public class ExperienceService {
 
     private String dec(String data) {
         return data == null ? null : encryptionUtils.decrypt(data);
+    }
+
+    public void delete(Long id) {
+        if (id != null) {
+            repo.deleteById(id);
+        }
     }
 }

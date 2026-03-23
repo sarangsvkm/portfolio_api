@@ -9,6 +9,7 @@ import com.sarangsvkm.portfolio_api.repository.EducationRepository;
 
 
 @Service
+@SuppressWarnings("null")
 public class EducationService {
 
     private final EducationRepository repo;
@@ -20,6 +21,7 @@ public class EducationService {
     }
 
     public Education save(Education e) {
+        if (e == null) throw new IllegalArgumentException("Education cannot be null");
         encrypt(e);
         Education saved = repo.save(e);
         decrypt(saved);
@@ -32,7 +34,8 @@ public class EducationService {
         return list;
     }
 
-    public Education update(int id, Education newData) {
+    public Education update(Long id, Education newData) {
+        if (id == null) throw new IllegalArgumentException("ID cannot be null");
         Education existing = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Education not found"));
 
@@ -51,7 +54,8 @@ public class EducationService {
         if (newData.getEndDate() != null)
             existing.setEndDate(enc(newData.getEndDate()));
 
-        Education updated = repo.save(existing);
+  
+		Education updated = repo.save(existing);
         decrypt(updated);
         return updated;
     }
@@ -80,4 +84,9 @@ public class EducationService {
         return data == null ? null : encryptionUtils.decrypt(data);
     }
 
+    public void delete(Long id) {
+        if (id != null) {
+            repo.deleteById(id);
+        }
+    }
 }

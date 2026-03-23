@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "name": "SARANG S",
+    "email": "sarangsvkm@gmaill.com",
+    "phone": "+91 7511133612",
+    "verified": false,
+    "createdAt": "2026-03-23T08:51:13.456053"
+  },
+  {
+    "id": 2,
+    "name": "SARANG S",
+    "email": "sarangsvkm@gmail.com",
+    "phone": "+91 7511133612",
+    "verified": true,
+    "createdAt": "2026-03-23T08:52:23.224251"
+  }
+]

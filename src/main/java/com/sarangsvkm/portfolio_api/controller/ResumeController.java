@@ -2,6 +2,7 @@ package com.sarangsvkm.portfolio_api.controller;
 
 import com.sarangsvkm.portfolio_api.apiuser.ApiUserService;
 import com.sarangsvkm.portfolio_api.dto.ResumeDTO;
+import com.sarangsvkm.portfolio_api.dto.DeleteRequest;
 import com.fasterxml.jackson.annotation.JsonAlias;
 
 import com.sarangsvkm.portfolio_api.entity.Education;
@@ -98,5 +99,53 @@ public class ResumeController {
         public void setSkills(List<Skill> s) { this.skills = s; }
         public List<Project> getProjects() { return projects; }
         public void setProjects(List<Project> p) { this.projects = p; }
+    }
+
+    @DeleteMapping("/experience/{id}")
+    public ResponseEntity<Void> deleteExperience(@PathVariable Long id,
+            @RequestBody DeleteRequest request) {
+        try {
+            apiUserService.login(request.getUsername(), request.getPassword());
+            resumeService.deleteExperience(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    @DeleteMapping("/education/{id}")
+    public ResponseEntity<Void> deleteEducation(@PathVariable Long id,
+            @RequestBody DeleteRequest request) {
+        try {
+            apiUserService.login(request.getUsername(), request.getPassword());
+            resumeService.deleteEducation(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    @DeleteMapping("/skill/{id}")
+    public ResponseEntity<Void> deleteSkill(@PathVariable Long id,
+            @RequestBody DeleteRequest request) {
+        try {
+            apiUserService.login(request.getUsername(), request.getPassword());
+            resumeService.deleteSkill(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    @DeleteMapping("/project/{id}")
+    public ResponseEntity<Void> deleteProject(@PathVariable Long id,
+            @RequestBody DeleteRequest request) {
+        try {
+            apiUserService.login(request.getUsername(), request.getPassword());
+            resumeService.deleteProject(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.sarangsvkm.portfolio_api.service;
 
 import com.sarangsvkm.portfolio_api.dto.ResumeDTO;
 import com.sarangsvkm.portfolio_api.entity.Profile;
+import com.sarangsvkm.portfolio_api.entity.SocialMedia;
 import com.sarangsvkm.portfolio_api.repository.ProfileRepository;
 import com.sarangsvkm.portfolio_api.repository.ExperienceRepository;
 import com.sarangsvkm.portfolio_api.repository.EducationRepository;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@SuppressWarnings("null")
 public class ResumeService {
 
     private final ProfileRepository profileRepo;
@@ -42,7 +44,8 @@ public class ResumeService {
     }
 
     // ✅ POST — Save full resume (encrypt + persist all sections)
-    public ResumeDTO saveResume(ResumeDTO dto) throws Exception {
+    public ResumeDTO saveResume(ResumeDTO dto) {
+        if (dto == null) throw new IllegalArgumentException("ResumeDTO cannot be null");
 
         // --- Profile ---
         if (dto.getProfile() != null) {
@@ -53,6 +56,13 @@ public class ResumeService {
             p.setEmail(enc(p.getEmail()));
             p.setPhone(enc(p.getPhone()));
             p.setLocation(enc(p.getLocation()));
+            
+            if (p.getSocialMediaLinks() != null) {
+                for (SocialMedia sm : p.getSocialMediaLinks()) {
+                    sm.setUrl(enc(sm.getUrl()));
+                    sm.setProfile(p);
+                }
+            }
             profileRepo.save(p);
         }
 
@@ -116,6 +126,13 @@ public class ResumeService {
             p.setEmail(dec(p.getEmail()));
             p.setPhone(dec(p.getPhone()));
             p.setLocation(dec(p.getLocation()));
+            
+            List<SocialMedia> links = p.getSocialMediaLinks();
+            if (links != null) {
+                for (SocialMedia sm : links) {
+                    sm.setUrl(dec(sm.getUrl()));
+                }
+            }
         });
         Profile profile = profiles.isEmpty() ? null : profiles.get(0);
 
@@ -159,11 +176,35 @@ public class ResumeService {
         return new ResumeDTO(profile, experiences, educations, skills, projects);
     }
 
-    private String enc(String data) throws Exception {
-        return data == null ? null : encryptionUtils.encrypt(data);
+    private String enc(String data) {
+        try {
+            return data == null ? null : encryptionUtils.encrypt(data);
+        } catch (Exception e) {
+            return data; // Fallback to raw data if encryption fails (or return null)
+        }
     }
 
     private String dec(String data) {
-        return data == null ? null : encryptionUtils.decrypt(data);
+        try {
+            return data == null ? null : encryptionUtils.decrypt(data);
+        } catch (Exception e) {
+            return data; // Fallback to raw data if decryption fails
+        }
+    }
+
+    public void deleteExperience(Long id) {
+        if (id != null) experienceRepo.deleteById(id);
+    }
+
+    public void deleteEducation(Long id) {
+        if (id != null) educationRepo.deleteById(id);
+    }
+
+    public void deleteSkill(Long id) {
+        if (id != null) skillRepo.deleteById(id);
+    }
+
+    public void deleteProject(Long id) {
+        if (id != null) projectRepo.deleteById(id);
     }
 }

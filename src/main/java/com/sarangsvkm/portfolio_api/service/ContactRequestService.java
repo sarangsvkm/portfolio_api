@@ -27,6 +27,8 @@ public class ContactRequestService {
 
 
     public String generateAndSaveOtp(ContactRequest request) {
+        if (request == null) throw new IllegalArgumentException("Request cannot be null");
+        
         // Generate a 6-digit OTP
         String otp = String.format("%06d", new Random().nextInt(999999));
         
@@ -44,8 +46,10 @@ public class ContactRequestService {
         contact.setVerified(false);
         repo.save(contact);
         
-        // Send the OTP via Email
-        sendOtpEmail(request.getEmail(), request.getName(), otp);
+        // Send the OTP via Email asynchronously
+        java.util.concurrent.CompletableFuture.runAsync(() -> {
+            sendOtpEmail(request.getEmail(), request.getName(), otp);
+        });
         
         return otp;
     }
@@ -91,5 +95,11 @@ public class ContactRequestService {
             }
         }
         throw new RuntimeException("Invalid OTP or Email.");
+    }
+
+    public void delete(Long id) {
+        if (id != null) {
+            repo.deleteById(id);
+        }
     }
 }

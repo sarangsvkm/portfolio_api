@@ -4,109 +4,90 @@
 [![Java](https://img.shields.io/badge/Java-17-orange)](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A robust, enterprise-ready Spring Boot backend designed to serve as the centralized data layer for professional portfolio websites. This API provides structured endpoints to manage a user's professional identity, experiences, skills, projects, and education with built-in security and data integrity.
+A robust, enterprise-ready Spring Boot backend designed as the centralized data layer for professional portfolio websites. This API provides secure, encrypted storage for your professional identity, experiences, skills, projects, and education.
 
 ---
 
 ## 🌟 Key Features
 
-- **🎯 Domain-Driven Design**: Clearly defined entities for Profile, Projects, Education, Experience, and Skills.
-- **📄 Unified Resume API**: A powerful `POST /api/resume` endpoint to save or update an entire professional profile, including all sub-entities, in a single atomic request.
-- **🔄 Full CRUD Lifecycle**: Support for creating, reading, and updating professional records for all domain entities.
-- **🛡️ Secure By Design**:
-  - **Header-Based Authentication**: Custom security layer requiring `username` and `password` headers for all mutation (POST/PUT/DELETE) operations.
-  - **AES Data Encryption**: All sensitive fields across all entities are encrypted at rest using `EncryptionUtils` (AES/ECB/PKCS5Padding) and transparently decrypted for authorized retrieval.
-- **📱 OTP-Gated Contact Reveal**: A unique feature that protects personal contact information (phone number) behind a One-Time Password verification flow for visitors.
-
-- **📧 Integrated Mail Services**: Automated email dispatch for contact requests and OTP verification.
-- **🗄️ Relational Persistence**: Fully integrated with PostgreSQL via Spring Data JPA for reliable data storage.
-- **⚡ Developer Optimized**: Utilizes Lombok to minimize boilerplate and Spring DevTools for rapid iteration.
+- **🎯 Domain-Driven Architecture**: Structured entities for Profile, Projects, Education, Experience, and Skills.
+- **📄 Atomic Resume API**: Powerful `POST /api/resume` endpoint to sync your entire professional profile in one request.
+- **🔗 Dynamic Social Media**: Manage a flexible list of social media links (LinkedIn, GitHub, etc.) with automatic encryption.
+- **🛡️ Multi-Layer Security**:
+  - **Authenticated Mutators**: All POST, PUT, and DELETE operations are protected by credential verification.
+  - **AES Encryption**: Sensitive fields are encrypted at rest (AES/ECB/PKCS5Padding).
+  - **Secure Config**: Database-driven system configuration for mail and CORS settings.
+- **📱 OTP-Gated Contact Reveal**: Protects personal contact details behind a secure One-Time Password verification flow.
+- **📧 Automated Mail Services**: Integrated dispatcher for contact requests and security alerts.
 
 ---
 
 ## 🛠️ Technology Stack
 
-- **Backend Framework**: Spring Boot 3.5.12
+- **Framework**: Spring Boot 3.5.12
 - **Language**: Java 17
-- **Data Access**: Spring Data JPA / Hibernate
-- **Database**: PostgreSQL (Optimized for Neon)
-- **Security**: Spring Security (Custom Filter Chain)
-- **Utilities**: Lombok, Spring Mail, Jasypt-derived Encryption
-
----
-
-## 📁 Project Structure
-
-```text
-src/main/java/com/sarangsvkm/portfolio_api/
-├── controller/      # REST Endpoints
-├── service/         # Business Logic & Encryption logic
-├── repository/      # Data Access Layer
-├── entity/          # JPA Entities
-├── config/          # Security & Application Configuration
-├── encryptionUtils/ # AES Encryption Utilities
-└── apiuser/         # Authentication & User Management
-```
+- **Database**: PostgreSQL (Optimized for Neon.tech)
+- **Security**: Spring Security 6+
+- **Utilities**: Lombok, Spring Mail, AES Encryption
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-
-- **Java Development Kit (JDK) 17** or higher
+- **JDK 17+**
 - **Maven 3.6+**
-- **PostgreSQL Database** (or any compatible RDBMS)
+- **PostgreSQL Instance**
 
-### Installation & Setup
-
-1. **Clone the Repository**
+### Installation
+1. **Clone & Navigate**
    ```bash
    git clone https://github.com/sarangsvkm/portfolio_api.git
    cd portfolio_api
    ```
 
 2. **Configure Environment**
-   Update `src/main/resources/application.properties` with your database and mail server credentials:
-   ```properties
-   spring.datasource.url=jdbc:postgresql://your-db-host:5432/your-db
-   spring.datasource.username=your-username
-   spring.datasource.password=your-password
-   
-   spring.mail.username=your-email@gmail.com
-   spring.mail.password=your-app-password
-   ```
+   The API supports environment variables for production security. Update `src/main/resources/application.properties` or set the following vars:
+   - `SPRING_DATASOURCE_URL`
+   - `SPRING_DATASOURCE_USERNAME`
+   - `SPRING_DATASOURCE_PASSWORD`
+   - `PORT` (Defaults to 8080)
 
-3. **Build and Run**
+3. **Run Application**
    ```bash
-   # Windows
-   mvnw.cmd spring-boot:run
-   
-   # Linux/macOS
-   ./mvnw spring-boot:run
+   mvnw spring-boot:run
    ```
 
 ---
 
-## 🔐 Security & API Authentication
+## 🔐 API Documentation (v2.0)
 
-All non-GET requests (POST, PUT) require the following headers for authentication:
+The API is served at the root level (`/`). All mutation requests require `username` and `password` in the request body.
 
-| Header | Description |
-| :--- | :--- |
-| `username` | Your administrative username |
-| `password` | Your administrative password |
+### Endpoints Overview
 
-*Note: In production environments, it is highly recommended to use HTTPS to protect these headers.*
+| Category | Endpoint | Method(s) | Auth |
+| :--- | :--- | :--- | :--- |
+| **Auth** | `/api/auth/register`, `/api/auth/login` | POST | No |
+| **Profile** | `/api/profile` | GET, POST, PUT | Required (POST/PUT) |
+| **Social Links** | `/api/profile/social/{id}` | DELETE | Required |
+| **Resume** | `/api/resume` | GET, POST | Required (POST) |
+| **Standalone** | `/api/experience`, `/api/education`, `/api/skills`, `/api/projects` | GET, POST, PUT, DELETE | Required (POST/PUT/DELETE) |
+| **Contact** | `/api/contact/request-otp`, `/api/contact/verify-otp` | POST | No |
+| **System** | `/api/config` | GET, POST, DELETE | Required (Headers) |
+
+---
+
+## 🧪 Testing with Postman
+A pre-configured Postman collection is included: `portfolio-api-postman-collection.json`.
+1. Import the file into Postman.
+2. Update the `baseUrl` variable to match your server (e.g., `http://localhost:8080`).
+3. Use the included samples to test Create, Update, and Secure Delete operations.
 
 ---
 
 ## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE.md](file:///e:/SRG/portfolio-api/LICENSE.md) file for details.
-
----
+Licensed under the [MIT License](LICENSE.md).
 
 ## 👨‍💻 Author
-
-**Sarang** - *Lead Developer* - [GitHub](https://github.com/sarangsvkm)
+**Sarang** - [GitHub](https://github.com/sarangsvkm)

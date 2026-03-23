@@ -1,7 +1,10 @@
 package com.sarangsvkm.portfolio_api.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Data
@@ -28,5 +31,9 @@ public class Profile {
 
     @Column(length = 500)
     private String location;
+
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<SocialMedia> socialMediaLinks = new ArrayList<>();
 
 }
