@@ -8,6 +8,7 @@ import com.sarangsvkm.portfolio_api.entity.Experience;
 import com.sarangsvkm.portfolio_api.repository.ExperienceRepository;
 
 @Service
+@SuppressWarnings("null")
 public class ExperienceService {
 
     private final ExperienceRepository repo;

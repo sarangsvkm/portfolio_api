@@ -32,6 +32,21 @@ public class Profile {
     @Column(length = 500)
     private String location;
 
+    @Column(length = 1000)
+    private String imageUrl;
+
+    @Column(length = 1000)
+    private String bannerUrl;
+
+    @Column(length = 1000)
+    private String resumeUrl;
+
+    @Lob
+    @Column(name = "profile_image")
+    private byte[] profileImage;
+
+    private String imageType;
+
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<SocialMedia> socialMediaLinks = new ArrayList<>();

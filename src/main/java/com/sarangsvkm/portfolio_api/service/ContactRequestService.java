@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.List;
 
 @Service
+@SuppressWarnings("null")
 public class ContactRequestService {
     
     private final ContactRequestRepository repo;

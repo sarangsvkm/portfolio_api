@@ -14,6 +14,7 @@ import com.sarangsvkm.portfolio_api.entity.Education;
 import com.sarangsvkm.portfolio_api.entity.Skill;
 import com.sarangsvkm.portfolio_api.entity.Project;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -44,8 +45,10 @@ public class ResumeService {
     }
 
     // ✅ POST — Save full resume (encrypt + persist all sections)
+    @Transactional
     public ResumeDTO saveResume(ResumeDTO dto) {
-        if (dto == null) throw new IllegalArgumentException("ResumeDTO cannot be null");
+        if (dto == null)
+            throw new IllegalArgumentException("ResumeDTO cannot be null");
 
         // --- Profile ---
         if (dto.getProfile() != null) {
@@ -56,7 +59,10 @@ public class ResumeService {
             p.setEmail(enc(p.getEmail()));
             p.setPhone(enc(p.getPhone()));
             p.setLocation(enc(p.getLocation()));
-            
+            p.setImageUrl(enc(p.getImageUrl()));
+            p.setBannerUrl(enc(p.getBannerUrl()));
+            p.setResumeUrl(enc(p.getResumeUrl()));
+
             if (p.getSocialMediaLinks() != null) {
                 for (SocialMedia sm : p.getSocialMediaLinks()) {
                     sm.setUrl(enc(sm.getUrl()));
@@ -114,8 +120,8 @@ public class ResumeService {
         return getResume(); // ✅ Return decrypted data for user feedback
     }
 
-
     // ✅ GET — Build full resume (decrypt all sections)
+    @Transactional(readOnly = true)
     public ResumeDTO getResume() {
         // --- Profile ---
         List<Profile> profiles = profileRepo.findAll();
@@ -126,7 +132,10 @@ public class ResumeService {
             p.setEmail(dec(p.getEmail()));
             p.setPhone(dec(p.getPhone()));
             p.setLocation(dec(p.getLocation()));
-            
+            p.setImageUrl(dec(p.getImageUrl()));
+            p.setBannerUrl(dec(p.getBannerUrl()));
+            p.setResumeUrl(dec(p.getResumeUrl()));
+
             List<SocialMedia> links = p.getSocialMediaLinks();
             if (links != null) {
                 for (SocialMedia sm : links) {
@@ -193,18 +202,22 @@ public class ResumeService {
     }
 
     public void deleteExperience(Long id) {
-        if (id != null) experienceRepo.deleteById(id);
+        if (id != null)
+            experienceRepo.deleteById(id);
     }
 
     public void deleteEducation(Long id) {
-        if (id != null) educationRepo.deleteById(id);
+        if (id != null)
+            educationRepo.deleteById(id);
     }
 
     public void deleteSkill(Long id) {
-        if (id != null) skillRepo.deleteById(id);
+        if (id != null)
+            skillRepo.deleteById(id);
     }
 
     public void deleteProject(Long id) {
-        if (id != null) projectRepo.deleteById(id);
+        if (id != null)
+            projectRepo.deleteById(id);
     }
 }

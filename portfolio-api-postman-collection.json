@@ -14,295 +14,115 @@
 					"request": {
 						"method": "POST",
 						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
+							{ "key": "Content-Type", "value": "application/json" }
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}"
 						},
-						"url": {
-							"raw": "{{baseUrl}}/api/auth/register",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"auth",
-								"register"
-							]
-						}
-					},
-					"response": []
+						"url": { "raw": "{{baseUrl}}/api/auth/register", "host": ["{{baseUrl}}"], "path": ["api", "auth", "register"] }
+					}
 				},
 				{
 					"name": "Login User",
 					"request": {
 						"method": "POST",
 						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
+							{ "key": "Content-Type", "value": "application/json" }
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}"
 						},
-						"url": {
-							"raw": "{{baseUrl}}/api/auth/login",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"auth",
-								"login"
-							]
-						}
-					},
-					"response": []
+						"url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] }
+					}
 				}
 			]
 		},
 		{
-			"name": "Profile",
+			"name": "Profile & Assets",
 			"item": [
 				{
 					"name": "Get All Profiles",
 					"request": {
 						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/api/profile",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"profile"
-							]
-						}
-					},
-					"response": []
+						"url": "{{baseUrl}}/api/profile"
+					}
 				},
 				{
-					"name": "Create Profile",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\",\n    \"profile\": {\n        \"name\": \"Sarang\",\n        \"title\": \"Full Stack Developer\",\n        \"about\": \"Experienced Java developer specializing in Spring Boot.\",\n        \"email\": \"sarang@example.com\",\n        \"phone\": \"+91 9876543210\",\n        \"location\": \"India\",\n        \"socialMediaLinks\": [\n            { \"platform\": \"LinkedIn\", \"url\": \"https://linkedin.com/in/sarang\" },\n            { \"platform\": \"GitHub\", \"url\": \"https://github.com/sarangsvkm\" }\n        ]\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/profile",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"profile"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Profile",
+					"name": "Update Profile Assets (URLs)",
 					"request": {
 						"method": "PUT",
 						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
+							{ "key": "Content-Type", "value": "application/json" }
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\",\n    \"profile\": {\n        \"name\": \"Sarang Updated\",\n        \"title\": \"Senior Full Stack Developer\",\n        \"socialMediaLinks\": [\n            { \"platform\": \"LinkedIn\", \"url\": \"https://linkedin.com/in/sarang-updated\" }\n        ]\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\",\n    \"profile\": {\n        \"name\": \"Sarang\",\n        \"imageUrl\": \"/api/profile/image/1\",\n        \"bannerUrl\": \"https://images.unsplash.com/photo-1506744038136-46273834b3fb\",\n        \"resumeUrl\": \"/api/upload/view/resume.pdf\"\n    }\n}"
 						},
-						"url": {
-							"raw": "{{baseUrl}}/api/profile/1",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"profile",
-								"1"
-							]
-						}
-					},
-					"response": []
+						"url": { "raw": "{{baseUrl}}/api/profile/1", "host": ["{{baseUrl}}"], "path": ["api", "profile", "1"] }
+					}
 				},
 				{
-					"name": "Delete Profile",
+					"name": "Upload Image to DB (Binary)",
 					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
+						"method": "POST",
 						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/profile/1",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"profile",
-								"1"
+							"mode": "formdata",
+							"formdata": [
+								{ "key": "username", "value": "admin", "type": "text" },
+								{ "key": "password", "value": "password", "type": "text" },
+								{ "key": "file", "type": "file", "src": [] }
 							]
-						}
-					},
-					"response": []
+						},
+						"url": { "raw": "{{baseUrl}}/api/profile/image/1", "host": ["{{baseUrl}}"], "path": ["api", "profile", "image", "1"] }
+					}
 				},
 				{
-					"name": "Delete Social Link",
+					"name": "View Image from DB",
 					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
+						"method": "GET",
+						"url": "{{baseUrl}}/api/profile/image/1"
+					}
+				},
+				{
+					"name": "Upload to Local Disk (Fastest)",
+					"request": {
+						"method": "POST",
 						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/profile/social/1",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"profile",
-								"social",
-								"1"
+							"mode": "formdata",
+							"formdata": [
+								{ "key": "file", "type": "file", "src": [] }
 							]
-						}
-					},
-					"response": []
+						},
+						"url": { "raw": "{{baseUrl}}/api/upload", "host": ["{{baseUrl}}"], "path": ["api", "upload"] }
+					}
 				}
 			]
 		},
 		{
-			"name": "Resume",
+			"name": "Resume (Full)",
 			"item": [
 				{
 					"name": "Get Full Resume",
 					"request": {
 						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/api/resume",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"resume"
-							]
-						}
-					},
-					"response": []
+						"url": "{{baseUrl}}/api/resume"
+					}
 				},
 				{
 					"name": "Save Full Resume",
 					"request": {
 						"method": "POST",
 						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
+							{ "key": "Content-Type", "value": "application/json" }
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\",\n    \"resume\": {\n        \"profile\": {\n            \"name\": \"Sarang\",\n            \"socialMediaLinks\": [{ \"platform\": \"GitHub\", \"url\": \"https://github.com/sarangsvkm\" }]\n        },\n        \"experiences\": [\n            {\n                \"company\": \"Tech Corp\",\n                \"role\": \"Software Engineer\"\n            }\n        ],\n        \"educations\": [\n            {\n                \"institution\": \"Example University\",\n                \"degree\": \"B.Tech\"\n            }\n        ],\n        \"skills\": [\n            { \"name\": \"Java\", \"level\": \"Expert\" }\n        ],\n        \"projects\": [\n            { \"title\": \"Portfolio API\", \"techStack\": \"Spring Boot\" }\n        ]\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\",\n    \"resume\": {\n        \"profile\": {\n            \"name\": \"Sarang\",\n            \"imageUrl\": \"/api/profile/image/1\"\n        },\n        \"experiences\": [],\n        \"educations\": [],\n        \"skills\": [],\n        \"projects\": []\n    }\n}"
 						},
-						"url": {
-							"raw": "{{baseUrl}}/api/resume",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"resume"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Resume Experience",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/resume/experience/1",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"resume",
-								"experience",
-								"1"
-							]
-						}
-					},
-					"response": []
+						"url": { "raw": "{{baseUrl}}/api/resume", "host": ["{{baseUrl}}"], "path": ["api", "resume"] }
+					}
 				}
 			]
 		},
@@ -312,271 +132,58 @@
 				{
 					"name": "Experience",
 					"item": [
-						{
-							"name": "Get All",
-							"request": {
-								"method": "GET",
-								"url": "{{baseUrl}}/api/experience"
-							}
-						},
-						{
-							"name": "Delete Standalone",
-							"request": {
-								"method": "DELETE",
-								"header": [{ "key": "Content-Type", "value": "application/json" }],
-								"body": { "mode": "raw", "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}" },
-								"url": "{{baseUrl}}/api/experience/1"
-							}
-						}
+						{ "name": "Get All", "request": { "method": "GET", "url": "{{baseUrl}}/api/experience" } },
+						{ "name": "Delete", "request": { "method": "DELETE", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}" }, "url": "{{baseUrl}}/api/experience/1" } }
 					]
 				},
 				{
 					"name": "Education",
 					"item": [
-						{
-							"name": "Get All",
-							"request": {
-								"method": "GET",
-								"url": "{{baseUrl}}/api/education"
-							}
-						},
-						{
-							"name": "Delete Standalone",
-							"request": {
-								"method": "DELETE",
-								"header": [{ "key": "Content-Type", "value": "application/json" }],
-								"body": { "mode": "raw", "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}" },
-								"url": "{{baseUrl}}/api/education/1"
-							}
-						}
+						{ "name": "Get All", "request": { "method": "GET", "url": "{{baseUrl}}/api/education" } },
+						{ "name": "Delete", "request": { "method": "DELETE", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}" }, "url": "{{baseUrl}}/api/education/1" } }
 					]
 				},
 				{
 					"name": "Skills",
 					"item": [
-						{
-							"name": "Get All",
-							"request": {
-								"method": "GET",
-								"url": "{{baseUrl}}/api/skills"
-							}
-						},
-						{
-							"name": "Delete Standalone",
-							"request": {
-								"method": "DELETE",
-								"header": [{ "key": "Content-Type", "value": "application/json" }],
-								"body": { "mode": "raw", "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}" },
-								"url": "{{baseUrl}}/api/skills/1"
-							}
-						}
+						{ "name": "Get All", "request": { "method": "GET", "url": "{{baseUrl}}/api/skills" } },
+						{ "name": "Delete", "request": { "method": "DELETE", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}" }, "url": "{{baseUrl}}/api/skills/1" } }
 					]
 				},
 				{
 					"name": "Projects",
 					"item": [
-						{
-							"name": "Get All",
-							"request": {
-								"method": "GET",
-								"url": "{{baseUrl}}/api/projects"
-							}
-						},
-						{
-							"name": "Delete Standalone",
-							"request": {
-								"method": "DELETE",
-								"header": [{ "key": "Content-Type", "value": "application/json" }],
-								"body": { "mode": "raw", "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}" },
-								"url": "{{baseUrl}}/api/projects/1"
-							}
-						}
+						{ "name": "Get All", "request": { "method": "GET", "url": "{{baseUrl}}/api/projects" } },
+						{ "name": "Delete", "request": { "method": "DELETE", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}" }, "url": "{{baseUrl}}/api/projects/1" } }
 					]
 				}
 			]
 		},
 		{
-			"name": "Contact & OTP",
+			"name": "Contact & Config",
 			"item": [
 				{
-					"name": "Request OTP",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"visitor@example.com\",\n    \"phone\": \"+91 9876543210\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/contact/request-otp",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"contact",
-								"request-otp"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Verify OTP",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"email\": \"visitor@example.com\",\n    \"otp\": \"123456\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/contact/verify-otp",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"contact",
-								"verify-otp"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Contact Request Report",
+					"name": "Contact Report",
 					"request": {
 						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/api/contact/report",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"contact",
-								"report"
-							]
-						}
-					},
-					"response": []
+						"url": "{{baseUrl}}/api/contact/report"
+					}
 				},
 				{
-					"name": "Delete Contact",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/contact/1",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"contact",
-								"1"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "System Config",
-			"item": [
-				{
-					"name": "Get All Configs",
+					"name": "System Config",
 					"request": {
 						"method": "GET",
 						"header": [
 							{ "key": "username", "value": "admin" },
 							{ "key": "password", "value": "password" }
 						],
-						"url": {
-							"raw": "{{baseUrl}}/api/config",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "config"]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Save/Update Config",
-					"request": {
-						"method": "POST",
-						"header": [
-							{ "key": "username", "value": "admin" },
-							{ "key": "password", "value": "password" },
-							{ "key": "Content-Type", "value": "application/json" }
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"configKey\": \"cors.allowed-origins\",\n    \"configValue\": \"http://localhost:3000\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/config",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "config"]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Config",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{ "key": "username", "value": "admin" },
-							{ "key": "password", "value": "password" }
-						],
-						"url": {
-							"raw": "{{baseUrl}}/api/config/1",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "config", "1"]
-						}
-					},
-					"response": []
+						"url": { "raw": "{{baseUrl}}/api/config", "host": ["{{baseUrl}}"], "path": ["api", "config"] }
+					}
 				}
 			]
 		}
 	],
 	"variable": [
-		{
-			"key": "baseUrl",
-			"value": "http://localhost:8080",
-			"type": "string"
-		}
+		{ "key": "baseUrl", "value": "http://localhost:8080", "type": "string" }
 	]
 }

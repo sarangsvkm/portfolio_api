@@ -17,7 +17,8 @@ public class ProfileService {
     private final SocialMediaRepository socialMediaRepo;
     private final EncryptionUtils encryptionUtils;
 
-    public ProfileService(ProfileRepository repo, SocialMediaRepository socialMediaRepo, EncryptionUtils encryptionUtils) {
+    public ProfileService(ProfileRepository repo, SocialMediaRepository socialMediaRepo,
+            EncryptionUtils encryptionUtils) {
         this.repo = repo;
         this.socialMediaRepo = socialMediaRepo;
         this.encryptionUtils = encryptionUtils;
@@ -25,8 +26,9 @@ public class ProfileService {
 
     // 🔐 SAVE (Encrypt)
     public Profile save(Profile p) throws Exception {
-        if (p == null) throw new IllegalArgumentException("Profile cannot be null");
-        
+        if (p == null)
+            throw new IllegalArgumentException("Profile cannot be null");
+
         p.setName(enc(p.getName()));
         p.setTitle(enc(p.getTitle()));
         p.setAbout(enc(p.getAbout()));
@@ -66,18 +68,25 @@ public class ProfileService {
     }
 
     public Profile update(Long id, Profile newData) {
-        if (id == null) throw new IllegalArgumentException("ID cannot be null");
-        
+        if (id == null)
+            throw new IllegalArgumentException("ID cannot be null");
+
         Profile existing = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Profile not found"));
 
         try {
-            if (newData.getName() != null) existing.setName(enc(newData.getName()));
-            if (newData.getTitle() != null) existing.setTitle(enc(newData.getTitle()));
-            if (newData.getEmail() != null) existing.setEmail(enc(newData.getEmail()));
-            if (newData.getPhone() != null) existing.setPhone(enc(newData.getPhone()));
-            if (newData.getLocation() != null) existing.setLocation(enc(newData.getLocation()));
-            if (newData.getAbout() != null) existing.setAbout(enc(newData.getAbout()));
+            if (newData.getName() != null)
+                existing.setName(enc(newData.getName()));
+            if (newData.getTitle() != null)
+                existing.setTitle(enc(newData.getTitle()));
+            if (newData.getEmail() != null)
+                existing.setEmail(enc(newData.getEmail()));
+            if (newData.getPhone() != null)
+                existing.setPhone(enc(newData.getPhone()));
+            if (newData.getLocation() != null)
+                existing.setLocation(enc(newData.getLocation()));
+            if (newData.getAbout() != null)
+                existing.setAbout(enc(newData.getAbout()));
 
             if (newData.getSocialMediaLinks() != null) {
                 for (SocialMedia sm : newData.getSocialMediaLinks()) {
@@ -99,6 +108,14 @@ public class ProfileService {
         if (id != null) {
             repo.deleteById(id);
         }
+    }
+
+    public Profile findById(Long id) {
+        return repo.findById(id).orElse(null);
+    }
+
+    public Profile updateRaw(Profile p) {
+        return repo.save(p);
     }
 
     public void deleteSocialMedia(Long id) {

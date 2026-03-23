@@ -37,7 +37,7 @@ public class SecurityConfig {
         // ✅ Fetch allowed origins from database, with localhost fallbacks
         String rawOrigins = configRepo.findByConfigKey("cors.allowed-origins")
                 .map(SystemConfig::getConfigValue)
-                .orElse("http://localhost,http://localhost:3000,http://localhost:5173,http://localhost:8080,http://127.0.0.1,http://127.0.0.1:3000,http://127.0.0.1:5173,http://192.168.68.54,http://192.168.68.54:3000,http://192.168.68.54:5173");
+                .orElse("http://localhost,http://localhost:3000,http://localhost:5173,http://localhost:5174,http://localhost:8080,http://127.0.0.1,http://127.0.0.1:3000,http://127.0.0.1:5173,http://127.0.0.1:5174,http://192.168.68.54,http://192.168.68.54:3000,http://192.168.68.54:5173,http://192.168.68.54:5174");
 
         config.setAllowedOrigins(Arrays.asList(rawOrigins.split(",")));
 
