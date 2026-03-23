@@ -14,9 +14,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
-import com.sarangsvkm.portfolio_api.entity.SystemConfig;
-import com.sarangsvkm.portfolio_api.repository.SystemConfigRepository;
-
 @Configuration
 public class SecurityConfig {
 
