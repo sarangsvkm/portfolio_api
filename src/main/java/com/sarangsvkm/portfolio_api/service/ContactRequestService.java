@@ -13,26 +13,27 @@ import java.util.List;
 @Service
 @SuppressWarnings("null")
 public class ContactRequestService {
-    
+
     private final ContactRequestRepository repo;
     private final ProfileService profileService;
     private final JavaMailSender mailSender;
     private final com.sarangsvkm.portfolio_api.repository.SystemConfigRepository configRepo;
 
-    public ContactRequestService(ContactRequestRepository repo, ProfileService profileService, JavaMailSender mailSender, com.sarangsvkm.portfolio_api.repository.SystemConfigRepository configRepo) {
+    public ContactRequestService(ContactRequestRepository repo, ProfileService profileService,
+            JavaMailSender mailSender, com.sarangsvkm.portfolio_api.repository.SystemConfigRepository configRepo) {
         this.repo = repo;
         this.profileService = profileService;
         this.mailSender = mailSender;
         this.configRepo = configRepo;
     }
 
-
     public String generateAndSaveOtp(ContactRequest request) {
-        if (request == null) throw new IllegalArgumentException("Request cannot be null");
-        
+        if (request == null)
+            throw new IllegalArgumentException("Request cannot be null");
+
         // Generate a 6-digit OTP
         String otp = String.format("%06d", new Random().nextInt(999999));
-        
+
         Optional<ContactRequest> existing = repo.findByEmail(request.getEmail());
         ContactRequest contact;
         if (existing.isPresent()) {
@@ -42,16 +43,16 @@ public class ContactRequestService {
         } else {
             contact = request;
         }
-        
+
         contact.setOtp(otp);
         contact.setVerified(false);
         repo.save(contact);
-        
+
         // Send the OTP via Email asynchronously
         java.util.concurrent.CompletableFuture.runAsync(() -> {
             sendOtpEmail(request.getEmail(), request.getName(), otp);
         });
-        
+
         return otp;
     }
 
@@ -65,13 +66,13 @@ public class ContactRequestService {
             message.setFrom(fromEmail);
             message.setTo(toEmail);
             message.setSubject("Your One-Time Password (OTP) for Portfolio Access");
-            message.setText("Hi " + name + ",\n\nYour OTP to view my contact details is: " + otp + "\n\nThis OTP is valid for a short period.\n\nThank you!");
+            message.setText("Hi " + name + ",\n\nYour OTP to view my contact details is: " + otp
+                    + "\n\nThis OTP is valid for a short period.\n\nThank you!");
             mailSender.send(message);
         } catch (Exception e) {
             System.err.println("Failed to send email to " + toEmail + ": " + e.getMessage());
         }
     }
-
 
     public List<ContactRequest> getAll() {
         return repo.findAll();
@@ -85,7 +86,7 @@ public class ContactRequestService {
                 contact.setVerified(true);
                 contact.setOtp(null); // Clear OTP after successful verification
                 repo.save(contact);
-                
+
                 // Fetch the profile phone number
                 List<Profile> profiles = profileService.getAll();
                 if (profiles != null && !profiles.isEmpty()) {
