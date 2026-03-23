@@ -1,0 +1,39 @@
+# Ignore build artifacts
+target/
+*.jar
+*.war
+*.ear
+
+# Ignore IDE files
+.idea/
+.vscode/
+.settings/
+.project
+.classpath
+.factorypath
+*.iml
+
+# Ignore Docker files
+Dockerfile
+.dockerignore
+
+# Ignore logs
+logs/
+*.log
+
+# Ignore Git files
+.git/
+.gitignore
+.gitattributes
+
+# Ignore Maven wrapper (if not needed in container)
+.mvn/
+mvnw
+mvnw.cmd
+
+# Ignore documentation and other non-essential files
+HELP.md
+LICENSE.md
+README.md
+portfolio-api-postman-collection.json
+response.json
