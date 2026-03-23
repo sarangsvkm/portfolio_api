@@ -47,6 +47,8 @@ public class Profile {
 
     private String imageType;
 
+    private String imageName;
+
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<SocialMedia> socialMediaLinks = new ArrayList<>();

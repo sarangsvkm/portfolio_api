@@ -109,6 +109,7 @@ public class ProfileController {
             
             profile.setProfileImage(file.getBytes());
             profile.setImageType(file.getContentType());
+            profile.setImageName(file.getOriginalFilename());
             service.updateRaw(profile);
             return ResponseEntity.ok("Image updated successfully");
 
@@ -129,5 +130,29 @@ public class ProfileController {
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(profile.getImageType()))
                 .body(profile.getProfileImage());
+    }
+
+    // ✅ DELETE IMAGE FROM DB
+    @DeleteMapping("/image/{id}")
+    public ResponseEntity<?> deleteImage(
+            @PathVariable Long id,
+            @RequestBody DeleteRequest request) {
+        
+        try {
+            apiUserService.login(request.getUsername(), request.getPassword());
+            Profile profile = service.findById(id);
+            if (profile == null) return ResponseEntity.notFound().build();
+            
+            profile.setProfileImage(null);
+            profile.setImageType(null);
+            profile.setImageName(null);
+            service.updateRaw(profile);
+            return ResponseEntity.ok("Image deleted successfully");
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting image");
+        }
     }
 }

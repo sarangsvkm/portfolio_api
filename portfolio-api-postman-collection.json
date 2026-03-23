@@ -86,6 +86,20 @@
 					}
 				},
 				{
+					"name": "Delete Image from DB",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/profile/image/1", "host": ["{{baseUrl}}"], "path": ["api", "profile", "image", "1"] }
+					}
+				},
+				{
 					"name": "Upload to Local Disk (Fastest)",
 					"request": {
 						"method": "POST",
