@@ -40,10 +40,10 @@
 			]
 		},
 		{
-			"name": "Profile",
+			"name": "Profile & Assets",
 			"item": [
 				{
-					"name": "Get Profiles",
+					"name": "Get Profile",
 					"request": {
 						"method": "GET",
 						"url": "{{baseUrl}}/api/profile"
@@ -60,13 +60,13 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Sarang\",\n    \"imageUrl\": \"/api/profile/image/1\",\n    \"bannerUrl\": \"https://images.unsplash.com/photo-1506744038136-46273834b3fb\",\n    \"resumeUrl\": \"/api/upload/view/resume.pdf\"\n}"
+							"raw": "{\n    \"name\": \"Sarang\",\n    \"imageUrl\": \"/api/profile/image/1\",\n    \"bannerUrl\": \"https://images.unsplash.com/photo-1506744038136-46273834b3fb\"\n}"
 						},
 						"url": { "raw": "{{baseUrl}}/api/profile/1", "host": ["{{baseUrl}}"], "path": ["api", "profile", "1"] }
 					}
 				},
 				{
-					"name": "Upload Image to DB",
+					"name": "Upload Image to DB (Binary)",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -88,7 +88,7 @@
 			"name": "Resume (Full)",
 			"item": [
 				{
-					"name": "Get Resume",
+					"name": "Get Full Resume",
 					"request": {
 						"method": "GET",
 						"url": "{{baseUrl}}/api/resume"
@@ -105,7 +105,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"profile\": {\n        \"name\": \"Sarang\",\n        \"imageUrl\": \"/api/profile/image/1\"\n    },\n    \"experiences\": [\n        {\n            \"company\": \"Google\",\n            \"role\": \"Dev\"\n        }\n    ],\n    \"educations\": [],\n    \"skills\": [],\n    \"projects\": []\n}"
+							"raw": "{\n    \"profile\": {\n        \"name\": \"Sarang\",\n        \"imageUrl\": \"/api/profile/image/1\"\n    },\n    \"experiences\": [\n        {\n            \"company\": \"Google\",\n            \"role\": \"Software Engineer\"\n        }\n    ],\n    \"educations\": [],\n    \"skills\": [],\n    \"projects\": []\n}"
 						},
 						"url": { "raw": "{{baseUrl}}/api/resume", "host": ["{{baseUrl}}"], "path": ["api", "resume"] }
 					}
@@ -115,6 +115,38 @@
 		{
 			"name": "Entities (Standalone)",
 			"item": [
+				{
+					"name": "Experience",
+					"item": [
+						{
+							"name": "Add Experience",
+							"request": {
+								"method": "POST",
+								"header": [
+									{ "key": "Content-Type", "value": "application/json" },
+									{ "key": "X-Admin-Username", "value": "admin" },
+									{ "key": "X-Admin-Password", "value": "password" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"company\": \"Tech Corp\",\n    \"role\": \"Senior Dev\"\n}"
+								},
+								"url": "{{baseUrl}}/api/experience"
+							}
+						},
+						{
+							"name": "Delete Experience",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{ "key": "X-Admin-Username", "value": "admin" },
+									{ "key": "X-Admin-Password", "value": "password" }
+								],
+								"url": "{{baseUrl}}/api/experience/1"
+							}
+						}
+					]
+				},
 				{
 					"name": "Education",
 					"item": [
@@ -129,20 +161,30 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"institution\": \"MIT\",\n    \"degree\": \"B.S. Computer Science\"\n}"
+									"raw": "{\n    \"institution\": \"MIT\",\n    \"degree\": \"Masters\"\n}"
 								},
 								"url": "{{baseUrl}}/api/education"
 							}
-						},
+						}
+					]
+				},
+				{
+					"name": "Skills",
+					"item": [
 						{
-							"name": "Delete Education",
+							"name": "Add Skill",
 							"request": {
-								"method": "DELETE",
+								"method": "POST",
 								"header": [
+									{ "key": "Content-Type", "value": "application/json" },
 									{ "key": "X-Admin-Username", "value": "admin" },
 									{ "key": "X-Admin-Password", "value": "password" }
 								],
-								"url": "{{baseUrl}}/api/education/1"
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"React\",\n    \"level\": \"Expert\"\n}"
+								},
+								"url": "{{baseUrl}}/api/skills"
 							}
 						}
 					]
@@ -161,12 +203,39 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"title\": \"Portfolio API\",\n    \"description\": \"Advanced backend\"\n}"
+									"raw": "{\n    \"title\": \"Portfolio API\",\n    \"description\": \"Advanced spring boot\"\n}"
 								},
 								"url": "{{baseUrl}}/api/projects"
 							}
 						}
 					]
+				}
+			]
+		},
+		{
+			"name": "Contact & Config",
+			"item": [
+				{
+					"name": "Contact Report",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "X-Admin-Username", "value": "admin" },
+							{ "key": "X-Admin-Password", "value": "password" }
+						],
+						"url": "{{baseUrl}}/api/contact/report"
+					}
+				},
+				{
+					"name": "Get System Config",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "X-Admin-Username", "value": "admin" },
+							{ "key": "X-Admin-Password", "value": "password" }
+						],
+						"url": "{{baseUrl}}/api/config"
+					}
 				}
 			]
 		}
