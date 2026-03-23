@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "7a3b4c5d-6e7f-8a9b-0c1d-2e3f4a5b6c7d",
 		"name": "Portfolio API Collection",
-		"description": "Complete collection for testing all Portfolio API endpoints. All POST/PUT methods store encrypted data in DB. All GET methods return decrypted data.",
+		"description": "Complete collection for testing all Portfolio API endpoints. All POST/PUT methods store encrypted data in DB. All GET methods return decrypted data. Images are stored in a separate table.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -64,7 +64,7 @@
 					}
 				},
 				{
-					"name": "Upload Image to DB (Binary)",
+					"name": "Upload Image to DB (Separate Table)",
 					"request": {
 						"method": "POST",
 						"body": {
@@ -100,7 +100,7 @@
 					}
 				},
 				{
-					"name": "Upload to Local Disk (Fastest)",
+					"name": "Upload to Local Disk (Alternative)",
 					"request": {
 						"method": "POST",
 						"body": {
