@@ -13,7 +13,9 @@ import com.sarangsvkm.portfolio_api.apiuser.ApiUserService;
 import com.sarangsvkm.portfolio_api.dto.ProfileRequest;
 import com.sarangsvkm.portfolio_api.dto.DeleteRequest;
 import com.sarangsvkm.portfolio_api.entity.Profile;
+import com.sarangsvkm.portfolio_api.entity.Image;
 import com.sarangsvkm.portfolio_api.service.ProfileService;
+import com.sarangsvkm.portfolio_api.service.ImageService;
 
 @RestController
 @RequestMapping("/api/profile")
@@ -21,13 +23,15 @@ public class ProfileController {
 
     private final ProfileService service;
     private final ApiUserService apiUserService;
+    private final ImageService imageService;
 
-    public ProfileController(ProfileService service, ApiUserService apiUserService) {
+    public ProfileController(ProfileService service, ApiUserService apiUserService, ImageService imageService) {
         this.service = service;
         this.apiUserService = apiUserService;
+        this.imageService = imageService;
     }
 
-    // ✅ CREATE PROFILE WITH LOGIN CHECK
+    // ✅ CREATE PROFILE
     @PostMapping
     public ResponseEntity<?> create(@RequestBody ProfileRequest request) {
         try {
@@ -94,7 +98,7 @@ public class ProfileController {
         }
     }
 
-    // ✅ UPLOAD IMAGE TO DB
+    // ✅ UPLOAD IMAGE TO DB (Separate Table)
     @PostMapping("/image/{id}")
     public ResponseEntity<?> uploadImage(
             @PathVariable Long id,
@@ -107,11 +111,16 @@ public class ProfileController {
             Profile profile = service.findById(id);
             if (profile == null) return ResponseEntity.notFound().build();
             
-            profile.setProfileImage(file.getBytes());
-            profile.setImageType(file.getContentType());
-            profile.setImageName(file.getOriginalFilename());
-            service.updateRaw(profile);
-            return ResponseEntity.ok("Image updated successfully");
+            Image img = imageService.findByProfileId(id);
+            if (img == null) img = new Image();
+            
+            img.setData(file.getBytes());
+            img.setType(file.getContentType());
+            img.setName(file.getOriginalFilename());
+            img.setProfile(profile);
+            
+            imageService.save(img);
+            return ResponseEntity.ok("Image updated successfully in separate table");
 
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
@@ -120,34 +129,25 @@ public class ProfileController {
         }
     }
 
-    // ✅ VIEW IMAGE FROM DB
+    // ✅ VIEW IMAGE FROM DB (Separate Table)
     @GetMapping("/image/{id}")
     public ResponseEntity<byte[]> getImage(@PathVariable Long id) {
-        Profile profile = service.findById(id);
-        if (profile == null || profile.getProfileImage() == null) {
+        Image img = imageService.findByProfileId(id);
+        if (img == null || img.getData() == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(profile.getImageType()))
-                .body(profile.getProfileImage());
+                .contentType(MediaType.parseMediaType(img.getType()))
+                .body(img.getData());
     }
 
-    // ✅ DELETE IMAGE FROM DB
+    // ✅ DELETE IMAGE FROM DB (Separate Table)
     @DeleteMapping("/image/{id}")
-    public ResponseEntity<?> deleteImage(
-            @PathVariable Long id,
-            @RequestBody DeleteRequest request) {
-        
+    public ResponseEntity<?> deleteImage(@PathVariable Long id, @RequestBody DeleteRequest request) {
         try {
             apiUserService.login(request.getUsername(), request.getPassword());
-            Profile profile = service.findById(id);
-            if (profile == null) return ResponseEntity.notFound().build();
-            
-            profile.setProfileImage(null);
-            profile.setImageType(null);
-            profile.setImageName(null);
-            service.updateRaw(profile);
-            return ResponseEntity.ok("Image deleted successfully");
+            imageService.deleteByProfileId(id);
+            return ResponseEntity.ok("Image deleted successfully from separate table");
 
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");

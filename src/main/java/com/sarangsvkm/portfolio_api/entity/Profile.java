@@ -41,13 +41,8 @@ public class Profile {
     @Column(length = 1000)
     private String resumeUrl;
 
-    @Lob
-    @Column(name = "profile_image")
-    private byte[] profileImage;
-
-    private String imageType;
-
-    private String imageName;
+    @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Image profileImage;
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

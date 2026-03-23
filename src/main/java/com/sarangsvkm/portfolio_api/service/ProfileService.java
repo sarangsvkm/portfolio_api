@@ -35,6 +35,9 @@ public class ProfileService {
         p.setEmail(enc(p.getEmail()));
         p.setPhone(enc(p.getPhone()));
         p.setLocation(enc(p.getLocation()));
+        p.setImageUrl(enc(p.getImageUrl()));
+        p.setBannerUrl(enc(p.getBannerUrl()));
+        p.setResumeUrl(enc(p.getResumeUrl()));
 
         if (p.getSocialMediaLinks() != null) {
             for (SocialMedia sm : p.getSocialMediaLinks()) {
@@ -56,6 +59,9 @@ public class ProfileService {
             p.setEmail(dec(p.getEmail()));
             p.setPhone(dec(p.getPhone()));
             p.setLocation(dec(p.getLocation()));
+            p.setImageUrl(dec(p.getImageUrl()));
+            p.setBannerUrl(dec(p.getBannerUrl()));
+            p.setResumeUrl(dec(p.getResumeUrl()));
 
             List<SocialMedia> links = p.getSocialMediaLinks();
             if (links != null) {
@@ -87,6 +93,12 @@ public class ProfileService {
                 existing.setLocation(enc(newData.getLocation()));
             if (newData.getAbout() != null)
                 existing.setAbout(enc(newData.getAbout()));
+            if (newData.getImageUrl() != null)
+                existing.setImageUrl(enc(newData.getImageUrl()));
+            if (newData.getBannerUrl() != null)
+                existing.setBannerUrl(enc(newData.getBannerUrl()));
+            if (newData.getResumeUrl() != null)
+                existing.setResumeUrl(enc(newData.getResumeUrl()));
 
             if (newData.getSocialMediaLinks() != null) {
                 for (SocialMedia sm : newData.getSocialMediaLinks()) {
@@ -112,10 +124,6 @@ public class ProfileService {
 
     public Profile findById(Long id) {
         return repo.findById(id).orElse(null);
-    }
-
-    public Profile updateRaw(Profile p) {
-        return repo.save(p);
     }
 
     public void deleteSocialMedia(Long id) {
