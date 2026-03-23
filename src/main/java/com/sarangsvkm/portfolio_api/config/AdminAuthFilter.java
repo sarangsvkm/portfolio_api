@@ -26,11 +26,17 @@ public class AdminAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+        // 🚀 ALWAYS allow OPTIONS (CORS preflight) without any auth check
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String path = request.getRequestURI();
         String method = request.getMethod();
 
-        // 🛡️ Admin Protection logic:
-        boolean isApiWrite = path.contains("/api/") && !path.contains("/api/auth/") && !method.equalsIgnoreCase("GET");
+        // ðŸ›¡ï¸ Admin Protection logic:
+        boolean isApiWrite = path.contains("/api/") && !path.contains("/api/auth/") && !method.equalsIgnoreCase("GET") && !method.equalsIgnoreCase("OPTIONS");
         boolean isConfigAccess = path.contains("/api/config");
         boolean isContactReport = path.contains("/api/contact/report");
 
@@ -57,3 +63,4 @@ public class AdminAuthFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+
