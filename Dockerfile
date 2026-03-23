@@ -32,4 +32,5 @@ EXPOSE 8080
 
 # Run the application
 # We use the PORT environment variable if provided, otherwise default to 8080
-ENTRYPOINT ["java", "-Dserver.port=${PORT:8080}", "-jar", "app.jar"]
+# Added JVM flags for memory optimization on restricted environments like Render
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75.0", "-XX:MinRAMPercentage=50.0", "-Xss256k", "-Dserver.port=${PORT:8080}", "-jar", "app.jar"]
