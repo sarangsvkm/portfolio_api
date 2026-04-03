@@ -47,6 +47,7 @@ public class ContactRequestService {
 
         contact.setOtp(otp);
         contact.setVerified(false);
+        contact.setCreatedAt(java.time.LocalDateTime.now()); // 🕒 Refresh timestamp for OTP expiry
         repo.save(contact);
 
         // Send the OTP via Email asynchronously
@@ -67,8 +68,11 @@ public class ContactRequestService {
             message.setText("Hi " + name + ",\n\nYour OTP to view my contact details is: " + otp
                     + "\n\nThis OTP is valid for a short period.\n\nThank you!");
             mailSender.send(message);
+        } catch (org.springframework.mail.MailAuthenticationException e) {
+            System.err.println("❌ SMTP Authentication Failed for " + fromEmail + ". Check your Gmail App Password in .env");
         } catch (Exception e) {
-            System.err.println("Failed to send email to " + toEmail + ": " + e.getMessage());
+            System.err.println("❌ Failed to send email to " + toEmail + ": " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -80,6 +84,13 @@ public class ContactRequestService {
         Optional<ContactRequest> existing = repo.findByEmail(email);
         if (existing.isPresent()) {
             ContactRequest contact = existing.get();
+            
+            // 🕒 Check if OTP has expired (1 hour)
+            if (contact.getCreatedAt() != null && 
+                contact.getCreatedAt().isBefore(java.time.LocalDateTime.now().minusHours(1))) {
+                throw new RuntimeException("OTP has expired. Please request a new one.");
+            }
+
             if (contact.getOtp() != null && contact.getOtp().equals(otp)) {
                 contact.setVerified(true);
                 contact.setOtp(null); // Clear OTP after successful verification
@@ -100,6 +111,23 @@ public class ContactRequestService {
     public void delete(Long id) {
         if (id != null) {
             repo.deleteById(id);
+        }
+    }
+
+    /**
+     * 🧹 Background task to delete unverified contact requests older than 1 hour.
+     * Runs every hour (3,600,000 ms).
+     */
+    @org.springframework.scheduling.annotation.Scheduled(fixedRate = 3600000)
+    public void cleanupExpiredOtps() {
+        java.time.LocalDateTime expiryTime = java.time.LocalDateTime.now().minusHours(1);
+        List<ContactRequest> expiredRequests = repo.findAll().stream()
+                .filter(cr -> !cr.isVerified() && cr.getCreatedAt() != null && cr.getCreatedAt().isBefore(expiryTime))
+                .collect(java.util.stream.Collectors.toList());
+
+        if (!expiredRequests.isEmpty()) {
+            System.out.println("🧹 Cleaning up " + expiredRequests.size() + " expired unverified records.");
+            repo.deleteAll(expiredRequests);
         }
     }
 }
