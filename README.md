@@ -25,6 +25,7 @@ A robust, enterprise-ready Spring Boot backend designed as the centralized data 
 ## 🛠️ Technology Stack
 
 - **Framework**: Spring Boot 3.5.12
+- **Version**: 2.0.0
 - **Language**: Java 17
 - **Database**: PostgreSQL (Optimized for Neon.tech)
 - **Security**: Spring Security 6+
@@ -74,7 +75,9 @@ The API is served at the root level (`/`). All mutation requests require `userna
 | **Resume** | `/api/resume` | GET, POST | Required (POST) |
 | **Standalone** | `/api/experience`, `/api/education`, `/api/skills`, `/api/projects` | GET, POST, PUT, DELETE | Required (POST/PUT/DELETE) |
 | **Contact** | `/api/contact/request-otp`, `/api/contact/verify-otp` | POST | No |
+| **Contact Report** | `/api/contact/report` | GET | Required (Headers) |
 | **System** | `/api/config` | GET, POST, DELETE | Required (Headers) |
+| **Version** | `/api/config/version` | GET | No |
 
 ---
 

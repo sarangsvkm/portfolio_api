@@ -17,7 +17,7 @@ WORKDIR /app
 
 # Copy the built JAR file from the build stage
 # The JAR name is based on the artifactId and version in pom.xml
-COPY --from=build /app/target/portfolio-api-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/target/portfolio-api-*.jar app.jar
 
 # Expose the application port (defaults to 8080 as per application.properties)
 EXPOSE 8080

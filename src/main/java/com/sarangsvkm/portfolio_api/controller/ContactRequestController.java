@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -56,9 +57,11 @@ public class ContactRequestController {
         }
     }
 
-    // ✅ PROTECTED (Auth by Filter)
     @GetMapping("/report")
     public List<Map<String, Object>> getContactRequestReport() {
+        DateTimeFormatter dateDoc = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter timeDoc = DateTimeFormatter.ofPattern("HH:mm:ss");
+
         return service.getAll().stream().map(cr -> {
             Map<String, Object> row = new HashMap<>();
             row.put("id",        cr.getId());
@@ -66,7 +69,14 @@ public class ContactRequestController {
             row.put("email",     cr.getEmail());
             row.put("phone",     cr.getPhone());
             row.put("verified",  cr.isVerified());
-            row.put("createdAt", cr.getCreatedAt() != null ? cr.getCreatedAt().toString() : null);
+            
+            if (cr.getCreatedAt() != null) {
+                row.put("date", cr.getCreatedAt().format(dateDoc));
+                row.put("time", cr.getCreatedAt().format(timeDoc));
+            } else {
+                row.put("date", null);
+                row.put("time", null);
+            }
             return row;
         }).collect(Collectors.toList());
     }
