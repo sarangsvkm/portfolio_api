@@ -143,7 +143,7 @@ public class ResumeService {
                 }
             }
         });
-        Profile profile = profiles.isEmpty() ? null : profiles.get(0);
+        Profile profile = profiles.isEmpty() ? null : sanitizeResumeProfile(profiles.get(0));
 
         // --- Experiences ---
         List<Experience> experiences = experienceRepo.findAll();
@@ -183,6 +183,27 @@ public class ResumeService {
         });
 
         return new ResumeDTO(profile, experiences, educations, skills, projects);
+    }
+
+    private Profile sanitizeResumeProfile(Profile source) {
+        if (source == null) {
+            return null;
+        }
+
+        Profile sanitized = new Profile();
+        sanitized.setId(source.getId());
+        sanitized.setName(source.getName());
+        sanitized.setTitle(source.getTitle());
+        sanitized.setAbout(source.getAbout());
+        sanitized.setEmail(source.getEmail());
+        sanitized.setPhone(source.getPhone());
+        sanitized.setLocation(source.getLocation());
+        sanitized.setImageUrl(source.getImageUrl());
+        sanitized.setBannerUrl(source.getBannerUrl());
+        sanitized.setResumeUrl(source.getResumeUrl());
+        sanitized.setSocialMediaLinks(source.getSocialMediaLinks());
+        sanitized.setProfileImage(null);
+        return sanitized;
     }
 
     private String enc(String data) {

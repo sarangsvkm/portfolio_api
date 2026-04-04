@@ -12,7 +12,6 @@ import com.sarangsvkm.portfolio_api.entity.Profile;
 import com.sarangsvkm.portfolio_api.entity.Image;
 import com.sarangsvkm.portfolio_api.service.ProfileService;
 import com.sarangsvkm.portfolio_api.service.ImageService;
-import com.sarangsvkm.portfolio_api.service.ImageService;
 
 @RestController
 @RequestMapping("/api/profile")
@@ -85,6 +84,17 @@ public class ProfileController {
     @GetMapping("/image/{id}")
     public ResponseEntity<byte[]> getImage(@PathVariable Long id) {
         Image img = imageService.findByProfileId(id);
+        if (img == null || img.getData() == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(img.getType()))
+                .body(img.getData());
+    }
+
+    @GetMapping("/image/name/{name}")
+    public ResponseEntity<byte[]> getImageByName(@PathVariable String name) {
+        Image img = imageService.findByName(name);
         if (img == null || img.getData() == null) {
             return ResponseEntity.notFound().build();
         }

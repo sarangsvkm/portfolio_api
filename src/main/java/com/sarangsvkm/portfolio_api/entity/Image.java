@@ -20,6 +20,7 @@ public class Image {
     private String type;
 
     @Lob
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "data")
     private byte[] data;
 

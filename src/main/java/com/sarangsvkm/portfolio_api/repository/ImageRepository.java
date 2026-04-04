@@ -8,4 +8,5 @@ import com.sarangsvkm.portfolio_api.entity.Image;
 public interface ImageRepository extends JpaRepository<Image, Long> {
     void deleteByProfileId(Long profileId);
     Image findByProfileId(Long profileId);
+    Image findFirstByNameIgnoreCase(String name);
 }

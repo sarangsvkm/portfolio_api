@@ -25,6 +25,11 @@ public class ImageService {
         return repo.findByProfileId(profileId);
     }
 
+    @Transactional(readOnly = true)
+    public Image findByName(String name) {
+        return repo.findFirstByNameIgnoreCase(name);
+    }
+
     @Transactional
     public void deleteByProfileId(Long profileId) {
         repo.deleteByProfileId(profileId);

@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.sarangsvkm.portfolio_api.encryptionUtils.EncryptionUtils;
+import com.sarangsvkm.portfolio_api.entity.Image;
 import com.sarangsvkm.portfolio_api.entity.Profile;
 import com.sarangsvkm.portfolio_api.entity.SocialMedia;
 import com.sarangsvkm.portfolio_api.repository.ProfileRepository;
@@ -15,16 +16,18 @@ public class ProfileService {
 
     private final ProfileRepository repo;
     private final SocialMediaRepository socialMediaRepo;
+    private final ImageService imageService;
     private final EncryptionUtils encryptionUtils;
 
     public ProfileService(ProfileRepository repo, SocialMediaRepository socialMediaRepo,
-            EncryptionUtils encryptionUtils) {
+            ImageService imageService, EncryptionUtils encryptionUtils) {
         this.repo = repo;
         this.socialMediaRepo = socialMediaRepo;
+        this.imageService = imageService;
         this.encryptionUtils = encryptionUtils;
     }
 
-    // 🔐 SAVE (Encrypt)
+    // 🔐 SAVE (Encrypt before storing, decrypt before returning)
     public Profile save(Profile p) throws Exception {
         if (p == null)
             throw new IllegalArgumentException("Profile cannot be null");
@@ -46,7 +49,26 @@ public class ProfileService {
             }
         }
 
-        return repo.save(p);
+        Profile saved = repo.save(p);
+
+        // Decrypt before returning so the frontend always gets plain text
+        saved.setName(dec(saved.getName()));
+        saved.setTitle(dec(saved.getTitle()));
+        saved.setAbout(dec(saved.getAbout()));
+        saved.setEmail(dec(saved.getEmail()));
+        saved.setPhone(dec(saved.getPhone()));
+        saved.setLocation(dec(saved.getLocation()));
+        saved.setImageUrl(dec(saved.getImageUrl()));
+        saved.setBannerUrl(dec(saved.getBannerUrl()));
+        saved.setResumeUrl(dec(saved.getResumeUrl()));
+
+        if (saved.getSocialMediaLinks() != null) {
+            for (SocialMedia sm : saved.getSocialMediaLinks()) {
+                sm.setUrl(dec(sm.getUrl()));
+            }
+        }
+
+        return saved;
     }
 
     // 🔓 GET ALL (Decrypt)
@@ -69,6 +91,13 @@ public class ProfileService {
                     sm.setUrl(dec(sm.getUrl()));
                 }
             }
+
+            Image image = imageService.findByProfileId(p.getId());
+            if (image != null) {
+                p.setImageUrl("/portfolioApi/api/profile/image/" + p.getId());
+            }
+
+            p.setProfileImage(null);
         }
         return list;
     }
@@ -113,7 +142,30 @@ public class ProfileService {
             throw new RuntimeException("Error updating profile");
         }
 
-        return repo.save(existing);
+        Profile saved = repo.save(existing);
+
+        // Decrypt before returning so the frontend always gets plain text
+        try {
+            saved.setName(dec(saved.getName()));
+            saved.setTitle(dec(saved.getTitle()));
+            saved.setAbout(dec(saved.getAbout()));
+            saved.setEmail(dec(saved.getEmail()));
+            saved.setPhone(dec(saved.getPhone()));
+            saved.setLocation(dec(saved.getLocation()));
+            saved.setImageUrl(dec(saved.getImageUrl()));
+            saved.setBannerUrl(dec(saved.getBannerUrl()));
+            saved.setResumeUrl(dec(saved.getResumeUrl()));
+
+            if (saved.getSocialMediaLinks() != null) {
+                for (SocialMedia sm : saved.getSocialMediaLinks()) {
+                    sm.setUrl(dec(sm.getUrl()));
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error decrypting updated profile");
+        }
+
+        return saved;
     }
 
     public void delete(Long id) {
