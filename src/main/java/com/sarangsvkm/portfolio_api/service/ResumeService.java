@@ -144,6 +144,10 @@ public class ResumeService {
             }
         });
         Profile profile = profiles.isEmpty() ? null : sanitizeResumeProfile(profiles.get(0));
+        if (profile != null) {
+            profile.setPhone("+91 ••••• ••07"); // Masked
+            profile.setResumeUrl(""); // Redacted
+        }
 
         // --- Experiences ---
         List<Experience> experiences = experienceRepo.findAll();

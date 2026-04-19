@@ -47,10 +47,10 @@ public class ContactRequestController {
         String email = payload.get("email");
         String otp = payload.get("otp");
         try {
-            String phoneNumber = service.verifyOtp(email, otp);
+            Map<String, String> details = service.verifyOtp(email, otp);
             Map<String, String> response = new HashMap<>();
             response.put("message", "Verification successful");
-            response.put("phone", phoneNumber);
+            response.putAll(details);
             return response;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());

@@ -71,8 +71,38 @@ public class ProfileService {
         return saved;
     }
 
-    // 🔓 GET ALL (Decrypt)
+    // 🔓 GET ALL (Redacted for Public)
     public List<Profile> getAll() throws Exception {
+        List<Profile> list = repo.findAll();
+        for (Profile p : list) {
+            p.setName(dec(p.getName()));
+            p.setTitle(dec(p.getTitle()));
+            p.setAbout(dec(p.getAbout()));
+            p.setEmail(dec(p.getEmail()));
+            p.setPhone("+91 ••••• ••07"); // Masked
+            p.setLocation(dec(p.getLocation()));
+            p.setImageUrl(dec(p.getImageUrl()));
+            p.setBannerUrl(dec(p.getBannerUrl()));
+            p.setResumeUrl(""); // Redacted
+            
+            // ... (rest of decryption)
+            List<SocialMedia> links = p.getSocialMediaLinks();
+            if (links != null) {
+                for (SocialMedia sm : links) {
+                    sm.setUrl(dec(sm.getUrl()));
+                }
+            }
+            Image image = imageService.findByProfileId(p.getId());
+            if (image != null) {
+                p.setImageUrl("/portfolioApi/api/profile/image/" + p.getId());
+            }
+            p.setProfileImage(null);
+        }
+        return list;
+    }
+
+    // 🔐 GET REAL (For internal use/verification)
+    public List<Profile> getRealProfiles() throws Exception {
         List<Profile> list = repo.findAll();
         for (Profile p : list) {
             p.setName(dec(p.getName()));
@@ -84,20 +114,13 @@ public class ProfileService {
             p.setImageUrl(dec(p.getImageUrl()));
             p.setBannerUrl(dec(p.getBannerUrl()));
             p.setResumeUrl(dec(p.getResumeUrl()));
-
+            
             List<SocialMedia> links = p.getSocialMediaLinks();
             if (links != null) {
                 for (SocialMedia sm : links) {
                     sm.setUrl(dec(sm.getUrl()));
                 }
             }
-
-            Image image = imageService.findByProfileId(p.getId());
-            if (image != null) {
-                p.setImageUrl("/portfolioApi/api/profile/image/" + p.getId());
-            }
-
-            p.setProfileImage(null);
         }
         return list;
     }

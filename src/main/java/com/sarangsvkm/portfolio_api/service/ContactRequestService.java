@@ -80,14 +80,14 @@ public class ContactRequestService {
         return repo.findAll();
     }
 
-    public String verifyOtp(String email, String otp) throws Exception {
+    public java.util.Map<String, String> verifyOtp(String email, String otp) throws Exception {
         Optional<ContactRequest> existing = repo.findByEmail(email);
         if (existing.isPresent()) {
             ContactRequest contact = existing.get();
             
-            // 🕒 Check if OTP has expired (1 hour)
+            // 🕒 Check if OTP has expired (10 minutes)
             if (contact.getCreatedAt() != null && 
-                contact.getCreatedAt().isBefore(java.time.LocalDateTime.now().minusHours(1))) {
+                contact.getCreatedAt().isBefore(java.time.LocalDateTime.now().minusMinutes(10))) {
                 throw new RuntimeException("OTP has expired. Please request a new one.");
             }
 
@@ -96,12 +96,16 @@ public class ContactRequestService {
                 contact.setOtp(null); // Clear OTP after successful verification
                 repo.save(contact);
 
-                // Fetch the profile phone number
-                List<Profile> profiles = profileService.getAll();
+                // Fetch the profile sensitive details (non-redacted)
+                List<Profile> profiles = profileService.getRealProfiles();
                 if (profiles != null && !profiles.isEmpty()) {
-                    return profiles.get(0).getPhone();
+                    Profile p = profiles.get(0);
+                    java.util.Map<String, String> details = new java.util.HashMap<>();
+                    details.put("phone", p.getPhone());
+                    details.put("resumeUrl", p.getResumeUrl());
+                    return details;
                 } else {
-                    return "Profile not found.";
+                    throw new RuntimeException("Profile not found.");
                 }
             }
         }
@@ -118,9 +122,12 @@ public class ContactRequestService {
      * 🧹 Background task to delete unverified contact requests older than 1 hour.
      * Runs every hour (3,600,000 ms).
      */
-    @org.springframework.scheduling.annotation.Scheduled(fixedRate = 3600000)
+    @org.springframework.beans.factory.annotation.Value("${otp.expiry.minutes:10}")
+    private int otpExpiryMinutes;
+
+    @org.springframework.scheduling.annotation.Scheduled(fixedRate = 600000) // Run every 10 min
     public void cleanupExpiredOtps() {
-        java.time.LocalDateTime expiryTime = java.time.LocalDateTime.now().minusHours(1);
+        java.time.LocalDateTime expiryTime = java.time.LocalDateTime.now().minusMinutes(otpExpiryMinutes);
         List<ContactRequest> expiredRequests = repo.findAll().stream()
                 .filter(cr -> !cr.isVerified() && cr.getCreatedAt() != null && cr.getCreatedAt().isBefore(expiryTime))
                 .collect(java.util.stream.Collectors.toList());
