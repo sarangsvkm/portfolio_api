@@ -8,6 +8,7 @@ import com.sarangsvkm.portfolio_api.repository.SocialMediaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sarangsvkm.portfolio_api.encryptionUtils.EncryptionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,17 +23,17 @@ public class ProfileService {
     private SocialMediaRepository socialMediaRepo;
 
     @Autowired
-    private EncryptionService encryptionService;
+    private EncryptionUtils encryptionUtils;
 
     @Autowired
     private ImageService imageService;
 
     private String enc(String data) {
-        return encryptionService.encrypt(data);
+        return encryptionUtils.encrypt(data);
     }
 
     private String dec(String data) {
-        return encryptionService.decrypt(data);
+        return encryptionUtils.decrypt(data);
     }
 
     public Profile save(Profile profile) {
@@ -137,7 +138,15 @@ public class ProfileService {
         }).orElseThrow(() -> new RuntimeException("Profile not found"));
     }
 
+    public Profile findById(Long id) {
+        return repo.findById(id).orElse(null);
+    }
+
     public void delete(Long id) {
         repo.deleteById(id);
+    }
+
+    public void deleteSocialMedia(Long id) {
+        socialMediaRepo.deleteById(id);
     }
 }
