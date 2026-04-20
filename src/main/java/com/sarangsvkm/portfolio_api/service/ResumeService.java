@@ -1,159 +1,56 @@
 package com.sarangsvkm.portfolio_api.service;
 
 import com.sarangsvkm.portfolio_api.dto.ResumeDTO;
-import com.sarangsvkm.portfolio_api.entity.Profile;
-import com.sarangsvkm.portfolio_api.entity.SocialMedia;
-import com.sarangsvkm.portfolio_api.repository.ProfileRepository;
-import com.sarangsvkm.portfolio_api.repository.ExperienceRepository;
-import com.sarangsvkm.portfolio_api.repository.EducationRepository;
-import com.sarangsvkm.portfolio_api.repository.SkillRepository;
-import com.sarangsvkm.portfolio_api.repository.ProjectRepository;
-import com.sarangsvkm.portfolio_api.encryptionUtils.EncryptionUtils;
-import com.sarangsvkm.portfolio_api.entity.Experience;
-import com.sarangsvkm.portfolio_api.entity.Education;
-import com.sarangsvkm.portfolio_api.entity.Skill;
-import com.sarangsvkm.portfolio_api.entity.Project;
+import com.sarangsvkm.portfolio_api.entity.*;
+import com.sarangsvkm.portfolio_api.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@SuppressWarnings("null")
 public class ResumeService {
 
-    private final ProfileRepository profileRepo;
-    private final ExperienceRepository experienceRepo;
-    private final EducationRepository educationRepo;
-    private final SkillRepository skillRepo;
-    private final ProjectRepository projectRepo;
-    private final EncryptionUtils encryptionUtils;
+    @Autowired
+    private ProfileRepository profileRepo;
 
-    public ResumeService(
-            ProfileRepository profileRepo,
-            ExperienceRepository experienceRepo,
-            EducationRepository educationRepo,
-            SkillRepository skillRepo,
-            ProjectRepository projectRepo,
-            EncryptionUtils encryptionUtils) {
-        this.profileRepo = profileRepo;
-        this.experienceRepo = experienceRepo;
-        this.educationRepo = educationRepo;
-        this.skillRepo = skillRepo;
-        this.projectRepo = projectRepo;
-        this.encryptionUtils = encryptionUtils;
+    @Autowired
+    private ExperienceRepository experienceRepo;
+
+    @Autowired
+    private EducationRepository educationRepo;
+
+    @Autowired
+    private SkillRepository skillRepo;
+
+    @Autowired
+    private ProjectRepository projectRepo;
+
+    @Autowired
+    private EncryptionService encryptionService;
+
+    @Autowired
+    private ImageService imageService;
+
+    private String dec(String data) {
+        if (data == null) return null;
+        return encryptionService.decrypt(data);
     }
 
-    // ✅ POST — Save full resume (encrypt + persist all sections)
-    @Transactional
-    public ResumeDTO saveResume(ResumeDTO dto) {
-        if (dto == null)
-            throw new IllegalArgumentException("ResumeDTO cannot be null");
-
-        // --- Profile ---
-        if (dto.getProfile() != null) {
-            Profile p = dto.getProfile();
-            p.setName(enc(p.getName()));
-            p.setTitle(enc(p.getTitle()));
-            p.setAbout(enc(p.getAbout()));
-            p.setEmail(enc(p.getEmail()));
-            p.setPhone(enc(p.getPhone()));
-            p.setLocation(enc(p.getLocation()));
-            p.setImageUrl(enc(p.getImageUrl()));
-            p.setBannerUrl(enc(p.getBannerUrl()));
-            p.setResumeUrl(enc(p.getResumeUrl()));
-
-            if (p.getSocialMediaLinks() != null) {
-                for (SocialMedia sm : p.getSocialMediaLinks()) {
-                    sm.setUrl(enc(sm.getUrl()));
-                    sm.setProfile(p);
-                }
-            }
-            profileRepo.save(p);
-        }
-
-        // --- Experiences ---
-        if (dto.getExperiences() != null) {
-            for (Experience e : dto.getExperiences()) {
-                e.setCompany(enc(e.getCompany()));
-                e.setRole(enc(e.getRole()));
-                e.setStartDate(enc(e.getStartDate()));
-                e.setEndDate(enc(e.getEndDate()));
-                e.setDescription(enc(e.getDescription()));
-            }
-            experienceRepo.saveAll(dto.getExperiences());
-        }
-
-        // --- Education ---
-        if (dto.getEducations() != null) {
-            for (Education e : dto.getEducations()) {
-                e.setDegree(enc(e.getDegree()));
-                e.setInstitution(enc(e.getInstitution()));
-                e.setFieldOfStudy(enc(e.getFieldOfStudy()));
-                e.setStartDate(enc(e.getStartDate()));
-                e.setEndDate(enc(e.getEndDate()));
-            }
-            educationRepo.saveAll(dto.getEducations());
-        }
-
-        // --- Skills ---
-        if (dto.getSkills() != null) {
-            for (Skill s : dto.getSkills()) {
-                s.setName(enc(s.getName()));
-                s.setLevel(enc(s.getLevel()));
-                s.setCategory(enc(s.getCategory()));
-            }
-            skillRepo.saveAll(dto.getSkills());
-        }
-
-        // --- Projects ---
-        if (dto.getProjects() != null) {
-            for (Project p : dto.getProjects()) {
-                p.setTitle(enc(p.getTitle()));
-                p.setLink(enc(p.getLink()));
-                p.setDescription(enc(p.getDescription()));
-                p.setTechStack(enc(p.getTechStack()));
-            }
-            projectRepo.saveAll(dto.getProjects());
-        }
-
-        return getResume(); // ✅ Return decrypted data for user feedback
-    }
-
-    // ✅ GET — Build full resume (decrypt all sections)
-    @Transactional(readOnly = true)
     public ResumeDTO getResume() {
-        // --- Profile ---
+        // --- Profile (Detached & Redacted) ---
         List<Profile> profiles = profileRepo.findAll();
-        profiles.forEach(p -> {
-            p.setName(dec(p.getName()));
-            p.setTitle(dec(p.getTitle()));
-            p.setAbout(dec(p.getAbout()));
-            p.setEmail(dec(p.getEmail()));
-            p.setPhone(dec(p.getPhone()));
-            p.setLocation(dec(p.getLocation()));
-            p.setImageUrl(dec(p.getImageUrl()));
-            p.setBannerUrl(dec(p.getBannerUrl()));
-            p.setResumeUrl(dec(p.getResumeUrl()));
-
-            List<SocialMedia> links = p.getSocialMediaLinks();
-            if (links != null) {
-                for (SocialMedia sm : links) {
-                    sm.setUrl(dec(sm.getUrl()));
-                }
-            }
-        });
-        Profile profile = profiles.isEmpty() ? null : sanitizeResumeProfile(profiles.get(0));
-        if (profile != null) {
-            profile.setPhone("+91 ••••• ••07"); // Masked
-            profile.setResumeUrl(""); // Redacted
+        Profile profile = null;
+        if (!profiles.isEmpty()) {
+            profile = copyAndRedactProfile(profiles.get(0));
         }
 
         // --- Experiences ---
         List<Experience> experiences = experienceRepo.findAll();
         experiences.forEach(e -> {
-            e.setCompany(dec(e.getCompany()));
             e.setRole(dec(e.getRole()));
+            e.setCompany(dec(e.getCompany()));
             e.setStartDate(dec(e.getStartDate()));
             e.setEndDate(dec(e.getEndDate()));
             e.setDescription(dec(e.getDescription()));
@@ -167,13 +64,13 @@ public class ResumeService {
             e.setFieldOfStudy(dec(e.getFieldOfStudy()));
             e.setStartDate(dec(e.getStartDate()));
             e.setEndDate(dec(e.getEndDate()));
+            e.setDescription(dec(e.getDescription()));
         });
 
         // --- Skills ---
         List<Skill> skills = skillRepo.findAll();
         skills.forEach(s -> {
             s.setName(dec(s.getName()));
-            s.setLevel(dec(s.getLevel()));
             s.setCategory(dec(s.getCategory()));
         });
 
@@ -181,68 +78,60 @@ public class ResumeService {
         List<Project> projects = projectRepo.findAll();
         projects.forEach(p -> {
             p.setTitle(dec(p.getTitle()));
-            p.setLink(dec(p.getLink()));
             p.setDescription(dec(p.getDescription()));
             p.setTechStack(dec(p.getTechStack()));
+            p.setLink(dec(p.getLink()));
+            p.setGithubLink(dec(p.getGithubLink()));
         });
 
-        return new ResumeDTO(profile, experiences, educations, skills, projects);
+        ResumeDTO resume = new ResumeDTO();
+        resume.setProfile(profile);
+        resume.setExperiences(experiences);
+        resume.setEducations(educations);
+        resume.setSkills(skills);
+        resume.setProjects(projects);
+
+        return resume;
     }
 
-    private Profile sanitizeResumeProfile(Profile source) {
-        if (source == null) {
-            return null;
+    /**
+     * Creates a DETACHED copy of the profile and redacts sensitive info.
+     * This prevents Hibernate from auto-saving masked strings to the DB.
+     */
+    private Profile copyAndRedactProfile(Profile source) {
+        Profile p = new Profile();
+        p.setId(source.getId());
+        p.setName(dec(source.getName()));
+        p.setTitle(dec(source.getTitle()));
+        p.setAbout(dec(source.getAbout()));
+        p.setEmail(dec(source.getEmail()));
+        p.setLocation(dec(source.getLocation()));
+        p.setImageUrl(dec(source.getImageUrl()));
+        p.setBannerUrl(dec(source.getBannerUrl()));
+        
+        // Always redact for the public resume view
+        p.setPhone("+91 ••••• ••07"); 
+        p.setResumeUrl("");
+
+        // Copy social media links (detached)
+        if (source.getSocialMediaLinks() != null) {
+            List<SocialMedia> links = new ArrayList<>();
+            for (SocialMedia sm : source.getSocialMediaLinks()) {
+                SocialMedia copy = new SocialMedia();
+                copy.setId(sm.getId());
+                copy.setPlatform(sm.getPlatform());
+                copy.setUrl(dec(sm.getUrl()));
+                links.add(copy);
+            }
+            p.setSocialMediaLinks(links);
         }
 
-        Profile sanitized = new Profile();
-        sanitized.setId(source.getId());
-        sanitized.setName(source.getName());
-        sanitized.setTitle(source.getTitle());
-        sanitized.setAbout(source.getAbout());
-        sanitized.setEmail(source.getEmail());
-        sanitized.setPhone(source.getPhone());
-        sanitized.setLocation(source.getLocation());
-        sanitized.setImageUrl(source.getImageUrl());
-        sanitized.setBannerUrl(source.getBannerUrl());
-        sanitized.setResumeUrl(source.getResumeUrl());
-        sanitized.setSocialMediaLinks(source.getSocialMediaLinks());
-        sanitized.setProfileImage(null);
-        return sanitized;
-    }
-
-    private String enc(String data) {
-        try {
-            return data == null ? null : encryptionUtils.encrypt(data);
-        } catch (Exception e) {
-            return data; // Fallback to raw data if encryption fails (or return null)
+        // Set Image URL if exists
+        Image image = imageService.findByProfileId(p.getId());
+        if (image != null) {
+            p.setImageUrl("/portfolioApi/api/profile/image/" + p.getId());
         }
-    }
 
-    private String dec(String data) {
-        try {
-            return data == null ? null : encryptionUtils.decrypt(data);
-        } catch (Exception e) {
-            return data; // Fallback to raw data if decryption fails
-        }
-    }
-
-    public void deleteExperience(Long id) {
-        if (id != null)
-            experienceRepo.deleteById(id);
-    }
-
-    public void deleteEducation(Long id) {
-        if (id != null)
-            educationRepo.deleteById(id);
-    }
-
-    public void deleteSkill(Long id) {
-        if (id != null)
-            skillRepo.deleteById(id);
-    }
-
-    public void deleteProject(Long id) {
-        if (id != null)
-            projectRepo.deleteById(id);
+        return p;
     }
 }
