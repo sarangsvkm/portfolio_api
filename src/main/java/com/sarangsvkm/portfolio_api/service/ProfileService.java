@@ -91,13 +91,8 @@ public class ProfileService {
         p.setImageUrl(dec(source.getImageUrl()));
         p.setBannerUrl(dec(source.getBannerUrl()));
 
-        if (redact) {
-            p.setPhone(""); // Hidden entirely when redacted
-            p.setResumeUrl(""); // Redacted
-        } else {
-            p.setPhone(dec(source.getPhone()));
-            p.setResumeUrl(dec(source.getResumeUrl()));
-        }
+        p.setPhone(dec(source.getPhone()));
+        p.setResumeUrl(dec(source.getResumeUrl()));
 
         // Copy social media links (detached)
         if (source.getSocialMediaLinks() != null) {
