@@ -15,6 +15,7 @@ public class EncryptionUtils {
 
     // 🔐 ENCRYPT
     public String encrypt(String data) {
+        if (data == null) return null;
         try {
             SecretKeySpec key = new SecretKeySpec(KEY.getBytes(StandardCharsets.UTF_8), ALGORITHM);
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding"); // ✅ fixed mode
@@ -31,6 +32,7 @@ public class EncryptionUtils {
 
     // 🔓 DECRYPT
     public String decrypt(String encryptedData) {
+        if (encryptedData == null) return null;
         try {
             SecretKeySpec key = new SecretKeySpec(KEY.getBytes(StandardCharsets.UTF_8), ALGORITHM);
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
@@ -41,7 +43,9 @@ public class EncryptionUtils {
             return new String(cipher.doFinal(decoded), StandardCharsets.UTF_8);
 
         } catch (Exception e) {
-            throw new RuntimeException("Decryption error: " + e.getMessage());
+            // ⚠️ Fallback: If decryption fails (e.g., data is plain text or uses old key), 
+            // return the data as-is instead of crashing the app.
+            return encryptedData;
         }
     }
 }
