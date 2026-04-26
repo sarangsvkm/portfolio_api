@@ -59,7 +59,7 @@ public class ProfileService {
                 socialMediaRepo.save(link);
             }
         }
-        return saved;
+        return copyAndProcess(saved, false); // ✅ Return decrypted
     }
 
     // 🔓 GET ALL (Redacted for Public)
@@ -125,16 +125,18 @@ public class ProfileService {
         if (id == null)
             throw new IllegalArgumentException("ID cannot be null");
         return repo.findById(id).map(existing -> {
-            existing.setName(enc(newData.getName()));
-            existing.setTitle(enc(newData.getTitle()));
-            existing.setAbout(enc(newData.getAbout()));
-            existing.setEmail(enc(newData.getEmail()));
-            existing.setPhone(enc(newData.getPhone()));
-            existing.setLocation(enc(newData.getLocation()));
-            existing.setImageUrl(enc(newData.getImageUrl()));
-            existing.setBannerUrl(enc(newData.getBannerUrl()));
-            existing.setResumeUrl(enc(newData.getResumeUrl()));
-            return repo.save(existing);
+            if (newData.getName() != null) existing.setName(enc(newData.getName()));
+            if (newData.getTitle() != null) existing.setTitle(enc(newData.getTitle()));
+            if (newData.getAbout() != null) existing.setAbout(enc(newData.getAbout()));
+            if (newData.getEmail() != null) existing.setEmail(enc(newData.getEmail()));
+            if (newData.getPhone() != null) existing.setPhone(enc(newData.getPhone()));
+            if (newData.getLocation() != null) existing.setLocation(enc(newData.getLocation()));
+            if (newData.getImageUrl() != null) existing.setImageUrl(enc(newData.getImageUrl()));
+            if (newData.getBannerUrl() != null) existing.setBannerUrl(enc(newData.getBannerUrl()));
+            if (newData.getResumeUrl() != null) existing.setResumeUrl(enc(newData.getResumeUrl()));
+            
+            Profile saved = repo.save(existing);
+            return copyAndProcess(saved, false); // ✅ Return decrypted
         }).orElseThrow(() -> new RuntimeException("Profile not found"));
     }
 
