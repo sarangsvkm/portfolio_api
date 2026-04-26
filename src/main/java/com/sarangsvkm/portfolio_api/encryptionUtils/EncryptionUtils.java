@@ -30,22 +30,31 @@ public class EncryptionUtils {
         }
     }
 
+    private static final String LEGACY_KEY = "ThisIsSpartaThis";
+
     // 🔓 DECRYPT
     public String decrypt(String encryptedData) {
         if (encryptedData == null) return null;
+        
+        // 1️⃣ Try Current Key
         try {
-            SecretKeySpec key = new SecretKeySpec(KEY.getBytes(StandardCharsets.UTF_8), ALGORITHM);
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-
-            cipher.init(Cipher.DECRYPT_MODE, key);
-
-            byte[] decoded = Base64.getDecoder().decode(encryptedData);
-            return new String(cipher.doFinal(decoded), StandardCharsets.UTF_8);
-
-        } catch (Exception e) {
-            // ⚠️ Fallback: If decryption fails (e.g., data is plain text or uses old key), 
-            // return the data as-is instead of crashing the app.
-            return encryptedData;
+            return decryptWithKey(encryptedData, KEY);
+        } catch (Exception e1) {
+            // 2️⃣ Try Legacy Key
+            try {
+                return decryptWithKey(encryptedData, LEGACY_KEY);
+            } catch (Exception e2) {
+                // ⚠️ Fallback: If both fail, return data as-is
+                return encryptedData;
+            }
         }
+    }
+
+    private String decryptWithKey(String encryptedData, String keyStr) throws Exception {
+        SecretKeySpec key = new SecretKeySpec(keyStr.getBytes(StandardCharsets.UTF_8), ALGORITHM);
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] decoded = Base64.getDecoder().decode(encryptedData);
+        return new String(cipher.doFinal(decoded), StandardCharsets.UTF_8);
     }
 }
