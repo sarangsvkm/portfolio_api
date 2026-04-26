@@ -92,7 +92,7 @@ public class ProfileService {
         p.setBannerUrl(dec(source.getBannerUrl()));
 
         if (redact) {
-            p.setPhone("+91 ••••• ••07"); // Masked
+            p.setPhone(""); // Hidden entirely when redacted
             p.setResumeUrl(""); // Redacted
         } else {
             p.setPhone(dec(source.getPhone()));

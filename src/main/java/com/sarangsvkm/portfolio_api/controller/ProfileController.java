@@ -12,6 +12,7 @@ import com.sarangsvkm.portfolio_api.entity.Profile;
 import com.sarangsvkm.portfolio_api.entity.Image;
 import com.sarangsvkm.portfolio_api.service.ProfileService;
 import com.sarangsvkm.portfolio_api.service.ImageService;
+import com.sarangsvkm.portfolio_api.apiuser.ApiUserService;
 
 @RestController
 @RequestMapping("/api/profile")
@@ -19,10 +20,12 @@ public class ProfileController {
 
     private final ProfileService service;
     private final ImageService imageService;
+    private final ApiUserService apiUserService;
 
-    public ProfileController(ProfileService service, ImageService imageService) {
+    public ProfileController(ProfileService service, ImageService imageService, ApiUserService apiUserService) {
         this.service = service;
         this.imageService = imageService;
+        this.apiUserService = apiUserService;
     }
 
     // ✅ CREATE PROFILE (Auth handled by Filter)
@@ -39,9 +42,20 @@ public class ProfileController {
         return ResponseEntity.ok(updated);
     }
 
-    // ✅ GET ALL PROFILES (Public)
+    // ✅ GET ALL PROFILES (Public / Admin)
     @GetMapping
-    public ResponseEntity<List<Profile>> getAll() throws Exception {
+    public ResponseEntity<List<Profile>> getAll(
+            @RequestHeader(value = "X-Admin-Username", required = false) String username,
+            @RequestHeader(value = "X-Admin-Password", required = false) String password) throws Exception {
+        
+        if (username != null && password != null) {
+            try {
+                apiUserService.login(username, password);
+                return ResponseEntity.ok(service.getRealProfiles());
+            } catch (Exception e) {
+                // Invalid credentials, fall back to public view
+            }
+        }
         return ResponseEntity.ok(service.getAll());
     }
 

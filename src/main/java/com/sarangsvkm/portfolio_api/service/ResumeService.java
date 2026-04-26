@@ -4,6 +4,7 @@ import com.sarangsvkm.portfolio_api.dto.ResumeDTO;
 import com.sarangsvkm.portfolio_api.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
@@ -24,9 +25,9 @@ public class ResumeService {
     @Autowired
     private ProjectService projectService;
 
-    public ResumeDTO getResume() {
+    public ResumeDTO getResume(boolean redact) {
         try {
-            List<Profile> profiles = profileService.getAll();
+            List<Profile> profiles = redact ? profileService.getAll() : profileService.getRealProfiles();
             Profile profile = profiles.isEmpty() ? null : profiles.get(0);
 
             return new ResumeDTO(
@@ -41,7 +42,8 @@ public class ResumeService {
         }
     }
 
-    public ResumeDTO saveResume(ResumeDTO dto) {
+    @Transactional
+    public ResumeDTO saveResume(ResumeDTO dto, boolean redact) {
         if (dto.getProfile() != null) {
             profileService.save(dto.getProfile());
         }
@@ -57,7 +59,7 @@ public class ResumeService {
         if (dto.getProjects() != null) {
             dto.getProjects().forEach(projectService::save);
         }
-        return getResume();
+        return getResume(redact);
     }
 
     public void deleteExperience(Long id) {

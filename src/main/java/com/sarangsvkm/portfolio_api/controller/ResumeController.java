@@ -2,6 +2,7 @@ package com.sarangsvkm.portfolio_api.controller;
 
 import com.sarangsvkm.portfolio_api.dto.ResumeDTO;
 import com.sarangsvkm.portfolio_api.service.ResumeService;
+import com.sarangsvkm.portfolio_api.apiuser.ApiUserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,22 +11,37 @@ import org.springframework.web.bind.annotation.*;
 public class ResumeController {
 
     private final ResumeService resumeService;
+    private final ApiUserService apiUserService;
 
-    public ResumeController(ResumeService resumeService) {
+    public ResumeController(ResumeService resumeService, ApiUserService apiUserService) {
         this.resumeService = resumeService;
+        this.apiUserService = apiUserService;
     }
 
     // ✅ POST /api/resume — save/update full resume (Auth handled by Filter)
     @PostMapping
-    public ResponseEntity<ResumeDTO> saveResume(@RequestBody ResumeDTO dto) {
-        ResumeDTO saved = resumeService.saveResume(dto);
+    public ResponseEntity<ResumeDTO> saveResume(
+            @RequestBody ResumeDTO dto,
+            @RequestHeader(value = "X-Admin-Username", required = false) String username,
+            @RequestHeader(value = "X-Admin-Password", required = false) String password) {
+        
+        boolean redact = true;
+        if (username != null && password != null) {
+            try {
+                apiUserService.login(username, password);
+                redact = false;
+            } catch (Exception e) {
+                // Invalid credentials, fall back to redacted
+            }
+        }
+        ResumeDTO saved = resumeService.saveResume(dto, redact);
         return ResponseEntity.ok(saved);
     }
 
     // ✅ GET /api/resume — returns full resume data (Public)
     @GetMapping
     public ResponseEntity<ResumeDTO> getResume() {
-        ResumeDTO resume = resumeService.getResume();
+        ResumeDTO resume = resumeService.getResume(true);
         return ResponseEntity.ok(resume);
     }
 
