@@ -62,7 +62,7 @@ public class ResumeParserService {
             throw new IllegalStateException("Google Gemini API Key is not configured. Please set the GEMINI_API_KEY environment variable.");
         }
 
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey;
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=" + apiKey;
 
         // Prompt instructing Gemini to structure the resume
         String prompt = "You are a professional ATS-compliant resume parser. Analyze the following raw text extracted from a resume PDF and parse it into a structured JSON object matching the exact schema provided. Return only the raw JSON. If a field is not found, use null or empty arrays.\n\n"
