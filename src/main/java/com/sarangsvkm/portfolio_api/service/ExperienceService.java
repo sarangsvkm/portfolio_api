@@ -13,10 +13,12 @@ public class ExperienceService {
 
     private final ExperienceRepository repo;
     private final EncryptionUtils encryptionUtils;
+    private final org.springframework.context.ApplicationEventPublisher eventPublisher;
 
-    public ExperienceService(ExperienceRepository repo, EncryptionUtils encryptionUtils) {
+    public ExperienceService(ExperienceRepository repo, EncryptionUtils encryptionUtils, org.springframework.context.ApplicationEventPublisher eventPublisher) {
         this.repo = repo;
         this.encryptionUtils = encryptionUtils;
+        this.eventPublisher = eventPublisher;
     }
 
     public Experience save(Experience e) {
@@ -24,6 +26,7 @@ public class ExperienceService {
         encrypt(e);
         Experience saved = repo.save(e);
         decrypt(saved);
+        eventPublisher.publishEvent(new com.sarangsvkm.portfolio_api.event.ResumeChangedEvent(this));
         return saved;
     }
 
@@ -56,6 +59,7 @@ public class ExperienceService {
         @SuppressWarnings("null")
 		Experience updated = repo.save(existing);
         decrypt(updated);
+        eventPublisher.publishEvent(new com.sarangsvkm.portfolio_api.event.ResumeChangedEvent(this));
         return updated;
     }
 
@@ -86,6 +90,7 @@ public class ExperienceService {
     public void delete(Long id) {
         if (id != null) {
             repo.deleteById(id);
+            eventPublisher.publishEvent(new com.sarangsvkm.portfolio_api.event.ResumeChangedEvent(this));
         }
     }
 }

@@ -28,6 +28,9 @@ public class ProfileService {
     @Autowired
     private ImageService imageService;
 
+    @Autowired
+    private org.springframework.context.ApplicationEventPublisher eventPublisher;
+
     private String enc(String data) {
         return encryptionUtils.encrypt(data);
     }
@@ -59,7 +62,9 @@ public class ProfileService {
                 socialMediaRepo.save(link);
             }
         }
-        return copyAndProcess(saved, false); // ✅ Return decrypted
+        Profile result = copyAndProcess(saved, false); // ✅ Return decrypted
+        eventPublisher.publishEvent(new com.sarangsvkm.portfolio_api.event.ResumeChangedEvent(this));
+        return result;
     }
 
     // 🔓 GET ALL (Redacted for Public)
@@ -130,8 +135,19 @@ public class ProfileService {
             if (newData.getBannerUrl() != null) existing.setBannerUrl(enc(newData.getBannerUrl()));
             if (newData.getResumeUrl() != null) existing.setResumeUrl(enc(newData.getResumeUrl()));
             
+            if (newData.getSocialMediaLinks() != null) {
+                existing.getSocialMediaLinks().clear();
+                for (SocialMedia link : newData.getSocialMediaLinks()) {
+                    link.setProfile(existing);
+                    link.setUrl(enc(link.getUrl()));
+                    existing.getSocialMediaLinks().add(link);
+                }
+            }
+            
             Profile saved = repo.save(existing);
-            return copyAndProcess(saved, false); // ✅ Return decrypted
+            Profile result = copyAndProcess(saved, false); // ✅ Return decrypted
+            eventPublisher.publishEvent(new com.sarangsvkm.portfolio_api.event.ResumeChangedEvent(this));
+            return result;
         }).orElseThrow(() -> new RuntimeException("Profile not found"));
     }
 
@@ -141,9 +157,11 @@ public class ProfileService {
 
     public void delete(Long id) {
         repo.deleteById(id);
+        eventPublisher.publishEvent(new com.sarangsvkm.portfolio_api.event.ResumeChangedEvent(this));
     }
 
     public void deleteSocialMedia(Long id) {
         socialMediaRepo.deleteById(id);
+        eventPublisher.publishEvent(new com.sarangsvkm.portfolio_api.event.ResumeChangedEvent(this));
     }
 }

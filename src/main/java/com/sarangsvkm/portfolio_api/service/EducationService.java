@@ -14,10 +14,12 @@ public class EducationService {
 
     private final EducationRepository repo;
     private final EncryptionUtils encryptionUtils;
+    private final org.springframework.context.ApplicationEventPublisher eventPublisher;
 
-    public EducationService(EducationRepository repo, EncryptionUtils encryptionUtils) {
+    public EducationService(EducationRepository repo, EncryptionUtils encryptionUtils, org.springframework.context.ApplicationEventPublisher eventPublisher) {
         this.repo = repo;
         this.encryptionUtils = encryptionUtils;
+        this.eventPublisher = eventPublisher;
     }
 
     public Education save(Education e) {
@@ -25,6 +27,7 @@ public class EducationService {
         encrypt(e);
         Education saved = repo.save(e);
         decrypt(saved);
+        eventPublisher.publishEvent(new com.sarangsvkm.portfolio_api.event.ResumeChangedEvent(this));
         return saved;
     }
 
@@ -57,6 +60,7 @@ public class EducationService {
   
 		Education updated = repo.save(existing);
         decrypt(updated);
+        eventPublisher.publishEvent(new com.sarangsvkm.portfolio_api.event.ResumeChangedEvent(this));
         return updated;
     }
 
@@ -87,6 +91,7 @@ public class EducationService {
     public void delete(Long id) {
         if (id != null) {
             repo.deleteById(id);
+            eventPublisher.publishEvent(new com.sarangsvkm.portfolio_api.event.ResumeChangedEvent(this));
         }
     }
 }

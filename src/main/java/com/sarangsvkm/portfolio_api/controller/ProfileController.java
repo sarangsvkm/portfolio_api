@@ -21,11 +21,13 @@ public class ProfileController {
     private final ProfileService service;
     private final ImageService imageService;
     private final ApiUserService apiUserService;
+    private final org.springframework.context.ApplicationEventPublisher eventPublisher;
 
-    public ProfileController(ProfileService service, ImageService imageService, ApiUserService apiUserService) {
+    public ProfileController(ProfileService service, ImageService imageService, ApiUserService apiUserService, org.springframework.context.ApplicationEventPublisher eventPublisher) {
         this.service = service;
         this.imageService = imageService;
         this.apiUserService = apiUserService;
+        this.eventPublisher = eventPublisher;
     }
 
     // ✅ CREATE PROFILE (Auth handled by Filter)
@@ -91,6 +93,7 @@ public class ProfileController {
         img.setProfile(profile);
         
         imageService.save(img);
+        eventPublisher.publishEvent(new com.sarangsvkm.portfolio_api.event.ResumeChangedEvent(this));
         return ResponseEntity.ok("Image updated successfully in separate table");
     }
 
@@ -117,10 +120,10 @@ public class ProfileController {
                 .body(img.getData());
     }
 
-    // ✅ DELETE IMAGE FROM DB (Auth handled by Filter)
     @DeleteMapping("/image/{id}")
     public ResponseEntity<String> deleteImage(@PathVariable Long id) {
         imageService.deleteByProfileId(id);
+        eventPublisher.publishEvent(new com.sarangsvkm.portfolio_api.event.ResumeChangedEvent(this));
         return ResponseEntity.ok("Image deleted successfully from separate table");
     }
 }

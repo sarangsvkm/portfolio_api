@@ -17,5 +17,4 @@ ENV SPRING_JPA_HIBERNATE_DDL_AUTO=validate
 
 EXPOSE 8080
 
-# Use shell form so PORT can be expanded at container runtime.
-ENTRYPOINT ["sh", "-c", "java -XX:MaxRAMPercentage=75.0 -XX:MinRAMPercentage=50.0 -Xss256k -Dserver.port=${PORT} -jar app.jar"]
+ENTRYPOINT ["sh", "-c", "java -XX:MaxRAMPercentage=50.0 -XX:MinRAMPercentage=50.0 -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -Xss256k -Dserver.port=${PORT} -jar app.jar"]

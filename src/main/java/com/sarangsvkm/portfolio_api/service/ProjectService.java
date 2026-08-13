@@ -13,10 +13,12 @@ public class ProjectService {
 
     private final ProjectRepository repo;
     private final EncryptionUtils encryptionUtils;
+    private final org.springframework.context.ApplicationEventPublisher eventPublisher;
 
-    public ProjectService(ProjectRepository repo, EncryptionUtils encryptionUtils) {
+    public ProjectService(ProjectRepository repo, EncryptionUtils encryptionUtils, org.springframework.context.ApplicationEventPublisher eventPublisher) {
         this.repo = repo;
         this.encryptionUtils = encryptionUtils;
+        this.eventPublisher = eventPublisher;
     }
 
     public Project save(Project p) {
@@ -24,6 +26,7 @@ public class ProjectService {
         encrypt(p);
         Project saved = repo.save(p);
         decrypt(saved);
+        eventPublisher.publishEvent(new com.sarangsvkm.portfolio_api.event.ResumeChangedEvent(this));
         return saved;
     }
 
@@ -52,6 +55,7 @@ public class ProjectService {
 
         Project updated = repo.save(existing);
         decrypt(updated);
+        eventPublisher.publishEvent(new com.sarangsvkm.portfolio_api.event.ResumeChangedEvent(this));
         return updated;
     }
 
@@ -80,6 +84,7 @@ public class ProjectService {
     public void delete(Long id) {
         if (id != null) {
             repo.deleteById(id);
+            eventPublisher.publishEvent(new com.sarangsvkm.portfolio_api.event.ResumeChangedEvent(this));
         }
     }
 }
