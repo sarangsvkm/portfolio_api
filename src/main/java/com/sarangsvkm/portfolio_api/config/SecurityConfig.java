@@ -22,7 +22,7 @@ public class SecurityConfig {
 
     private final AdminAuthFilter adminAuthFilter;
 
-    @org.springframework.beans.factory.annotation.Value("${cors.allowed-origins}")
+    @org.springframework.beans.factory.annotation.Value("${cors.allowed-origins:https://sarangsvkm.in,https://www.sarangsvkm.in,http://localhost:5173}")
     private String allowedOrigins;
 
     public SecurityConfig(AdminAuthFilter adminAuthFilter) {
@@ -51,7 +51,14 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // ✅ Allow origins from properties (supports environment variables)
-        config.setAllowedOriginPatterns(java.util.Arrays.stream(allowedOrigins.split(",")).map(String::trim).collect(java.util.stream.Collectors.toList()));
+        List<String> origins = (allowedOrigins != null && !allowedOrigins.trim().isEmpty())
+                ? java.util.Arrays.stream(allowedOrigins.split(","))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .collect(java.util.stream.Collectors.toList())
+                : List.of("https://sarangsvkm.in", "https://www.sarangsvkm.in", "https://*.sarangsvkm.in", "http://localhost:*");
+
+        config.setAllowedOriginPatterns(origins);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         
         // 👋 EXPLICITLY allow ALL headers to avoid 403 Forbidden with custom headers
