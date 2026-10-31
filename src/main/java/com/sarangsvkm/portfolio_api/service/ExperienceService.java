@@ -33,7 +33,42 @@ public class ExperienceService {
     public List<Experience> getAll() {
         List<Experience> list = repo.findAll();
         list.forEach(this::decrypt);
+        list.sort((a, b) -> {
+            int scoreB = parseDateScore(b.getEndDate(), b.getStartDate());
+            int scoreA = parseDateScore(a.getEndDate(), a.getStartDate());
+            return Integer.compare(scoreB, scoreA);
+        });
         return list;
+    }
+
+    private int parseDateScore(String endDate, String startDate) {
+        int endScore = parseSingleDateScore(endDate);
+        int startScore = parseSingleDateScore(startDate);
+        return endScore > 0 ? endScore : startScore;
+    }
+
+    private int parseSingleDateScore(String dateStr) {
+        if (dateStr == null || dateStr.isBlank()) return 0;
+        String s = dateStr.trim();
+        if (s.equalsIgnoreCase("present")) return 999999;
+
+        int year = 0;
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("\\b(19\\d{2}|20\\d{2})\\b").matcher(s);
+        if (m.find()) {
+            year = Integer.parseInt(m.group(1));
+        }
+
+        int month = 0;
+        String lower = s.toLowerCase();
+        String[] months = {"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
+        for (int i = 0; i < months.length; i++) {
+            if (lower.contains(months[i])) {
+                month = i + 1;
+                break;
+            }
+        }
+
+        return year * 100 + month;
     }
 
     public Experience update(Long id, Experience newData) {
