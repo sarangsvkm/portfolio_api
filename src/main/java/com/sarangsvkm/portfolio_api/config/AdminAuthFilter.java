@@ -35,14 +35,17 @@ public class AdminAuthFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         String method = request.getMethod();
 
+        boolean isSafeMethod = method.equalsIgnoreCase("GET") 
+                || method.equalsIgnoreCase("HEAD") 
+                || method.equalsIgnoreCase("OPTIONS");
+
         // 🛡️ Admin Protection logic:
-        // 1. All non-GET /api/ requests EXCEPT public contact endpoints and auth
+        // 1. All non-GET/HEAD /api/ requests EXCEPT public contact endpoints and auth
         boolean isApiWrite = path.contains("/api/") 
                 && !path.contains("/api/auth/") 
                 && !path.contains("/api/contact/request-otp") 
                 && !path.contains("/api/contact/verify-otp")
-                && !method.equalsIgnoreCase("GET") 
-                && !method.equalsIgnoreCase("OPTIONS");
+                && !isSafeMethod;
 
         // 2. All /api/config requests EXCEPT the public version endpoint
         boolean isConfigAccess = path.contains("/api/config") && !path.contains("/api/config/version");
