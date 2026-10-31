@@ -1,7 +1,5 @@
 package com.sarangsvkm.portfolio_api.entity;
 
-
-
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -28,5 +26,6 @@ public class Education {
     @Column(length = 500)
     private String endDate;
 
-	
+    @Column(columnDefinition = "TEXT")
+    private String description;
 }

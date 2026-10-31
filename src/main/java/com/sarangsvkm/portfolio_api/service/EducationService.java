@@ -57,7 +57,9 @@ public class EducationService {
         if (newData.getEndDate() != null)
             existing.setEndDate(enc(newData.getEndDate()));
 
-  
+        if (newData.getDescription() != null)
+            existing.setDescription(enc(newData.getDescription()));
+
 		Education updated = repo.save(existing);
         decrypt(updated);
         eventPublisher.publishEvent(new com.sarangsvkm.portfolio_api.event.ResumeChangedEvent(this));
@@ -70,6 +72,7 @@ public class EducationService {
         e.setFieldOfStudy(enc(e.getFieldOfStudy()));
         e.setStartDate(enc(e.getStartDate()));
         e.setEndDate(enc(e.getEndDate()));
+        e.setDescription(enc(e.getDescription()));
     }
 
     private void decrypt(Education e) {
@@ -78,6 +81,7 @@ public class EducationService {
         e.setFieldOfStudy(dec(e.getFieldOfStudy()));
         e.setStartDate(dec(e.getStartDate()));
         e.setEndDate(dec(e.getEndDate()));
+        e.setDescription(dec(e.getDescription()));
     }
 
     private String enc(String data) {
