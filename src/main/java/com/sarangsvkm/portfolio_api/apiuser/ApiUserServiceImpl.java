@@ -31,31 +31,19 @@ public class ApiUserServiceImpl implements ApiUserService {
             apiUser.setPassword(encryptedPassword);
             return repo.save(apiUser);
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException("Encryption error");
         }
     }
+
     // ✅ LOGIN
     @Override
     public ApiUser login(String username, String password) {
-
-        System.out.println("🔐 LOGIN ATTEMPT — username: [" + username + "]");
-
         ApiUser user = repo.findByUsername(username)
-                .orElseThrow(() -> {
-                    System.out.println("❌ User not found: [" + username + "]");
-                    return new RuntimeException("User not found");
-                });
-
-        System.out.println("✅ User found: [" + username + "]");
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         String decryptedPassword = encryptionUtils.decrypt(user.getPassword());
-        String inputPassword = password.trim();
-        String dbPassword = decryptedPassword.trim();
-
-        System.out.println("🔑 Input password:  [" + inputPassword + "]");
-        System.out.println("🔑 DB password:     [" + dbPassword + "]");
-        System.out.println("🔑 Match:           [" + inputPassword.equals(dbPassword) + "]");
+        String inputPassword = password != null ? password.trim() : "";
+        String dbPassword = decryptedPassword != null ? decryptedPassword.trim() : "";
 
         if (!inputPassword.equals(dbPassword)) {
             throw new RuntimeException("Invalid credentials");
