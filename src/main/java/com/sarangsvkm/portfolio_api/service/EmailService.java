@@ -33,7 +33,7 @@ public class EmailService {
     private final JavaMailSender mailSender;
     private final RestTemplate restTemplate;
 
-    public EmailService(JavaMailSender mailSender) {
+    public EmailService(@org.springframework.beans.factory.annotation.Autowired(required = false) JavaMailSender mailSender) {
         this.mailSender = mailSender;
         this.restTemplate = new RestTemplate();
     }
@@ -89,6 +89,10 @@ public class EmailService {
     }
 
     private void sendViaSmtp(String toEmail, String name, String otp) {
+        if (mailSender == null) {
+            log.error("❌ SMTP: JavaMailSender bean is not available/configured.");
+            return;
+        }
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(smtpFromEmail != null && !smtpFromEmail.isBlank() ? smtpFromEmail : "noreply@portfolio.com");
