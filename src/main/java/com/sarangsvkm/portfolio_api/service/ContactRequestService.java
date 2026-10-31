@@ -14,18 +14,15 @@ import java.util.List;
 @SuppressWarnings("null")
 public class ContactRequestService {
 
-    @org.springframework.beans.factory.annotation.Value("${spring.mail.username}")
-    private String fromEmail;
-
     private final ContactRequestRepository repo;
     private final ProfileService profileService;
-    private final JavaMailSender mailSender;
+    private final EmailService emailService;
 
     public ContactRequestService(ContactRequestRepository repo, ProfileService profileService,
-            JavaMailSender mailSender) {
+            EmailService emailService) {
         this.repo = repo;
         this.profileService = profileService;
-        this.mailSender = mailSender;
+        this.emailService = emailService;
     }
 
     public String generateAndSaveOtp(ContactRequest request) {
@@ -52,28 +49,10 @@ public class ContactRequestService {
 
         // Send the OTP via Email asynchronously
         java.util.concurrent.CompletableFuture.runAsync(() -> {
-            sendOtpEmail(request.getEmail(), request.getName(), otp);
+            emailService.sendOtpEmail(request.getEmail(), request.getName(), otp);
         });
 
         return otp;
-    }
-
-    private void sendOtpEmail(String toEmail, String name, String otp) {
-        try {
-
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
-            message.setTo(toEmail);
-            message.setSubject("Your One-Time Password (OTP) for Portfolio Access");
-            message.setText("Hi " + name + ",\n\nYour OTP to view my contact details is: " + otp
-                    + "\n\nThis OTP is valid for a short period.\n\nThank you!");
-            mailSender.send(message);
-        } catch (org.springframework.mail.MailAuthenticationException e) {
-            System.err.println("❌ SMTP Authentication Failed for " + fromEmail + ". Check your Gmail App Password in .env");
-        } catch (Exception e) {
-            System.err.println("❌ Failed to send email to " + toEmail + ": " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 
     public List<ContactRequest> getAll() {
