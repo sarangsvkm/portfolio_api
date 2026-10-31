@@ -50,25 +50,18 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // ✅ Allow origins from properties (supports environment variables)
-        List<String> origins = (allowedOrigins != null && !allowedOrigins.trim().isEmpty())
-                ? java.util.Arrays.stream(allowedOrigins.split(","))
-                    .map(String::trim)
-                    .filter(s -> !s.isEmpty())
-                    .collect(java.util.stream.Collectors.toList())
-                : List.of("https://sarangsvkm.in", "https://www.sarangsvkm.in", "https://*.sarangsvkm.in", "http://localhost:*");
-
-        config.setAllowedOriginPatterns(origins);
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        // ✅ Always allow all origin patterns (*) so www.sarangsvkm.in, sarangsvkm.in, Vercel deployments, and local testing never get blocked
+        config.setAllowedOriginPatterns(List.of("*"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH"));
         
-        // 👋 EXPLICITLY allow ALL headers to avoid 403 Forbidden with custom headers
+        // 👋 EXPLICITLY allow ALL headers
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("*"));
         
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        // 🚨 Register for ALL paths to be sure
+        // 🚨 Register for ALL paths
         source.registerCorsConfiguration("/**", config);
         return source;
     }
