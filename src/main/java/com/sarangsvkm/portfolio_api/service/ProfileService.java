@@ -96,11 +96,10 @@ public class ProfileService {
         p.setImageUrl(dec(source.getImageUrl()));
         p.setBannerUrl(dec(source.getBannerUrl()));
 
+        p.setPhone(dec(source.getPhone()));
         if (redact) {
-            p.setPhone("+91 ••••••••••");
             p.setResumeUrl("");
         } else {
-            p.setPhone(dec(source.getPhone()));
             p.setResumeUrl(dec(source.getResumeUrl()));
         }
 
