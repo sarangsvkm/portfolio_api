@@ -32,6 +32,15 @@ public class SystemConfigController {
         return ResponseEntity.ok(response);
     }
 
+    // ✅ GET PUBLIC CONFIGS (Public settings like site.resumeTemplate)
+    @GetMapping("/public")
+    public ResponseEntity<Map<String, String>> getPublicConfigs() {
+        Map<String, String> publicConfigs = new HashMap<>();
+        repository.findByConfigKey("site.resumeTemplate")
+                .ifPresent(c -> publicConfigs.put(c.getConfigKey(), c.getConfigValue()));
+        return ResponseEntity.ok(publicConfigs);
+    }
+
     // ✅ GET ALL (Auth handled by Filter)
     @GetMapping
     public ResponseEntity<List<SystemConfig>> getAllConfigs() {

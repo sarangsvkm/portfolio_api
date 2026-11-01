@@ -47,8 +47,10 @@ public class AdminAuthFilter extends OncePerRequestFilter {
                 && !path.contains("/api/contact/verify-otp")
                 && !isSafeMethod;
 
-        // 2. All /api/config requests EXCEPT the public version endpoint
-        boolean isConfigAccess = path.contains("/api/config") && !path.contains("/api/config/version");
+        // 2. All /api/config requests EXCEPT the public version and public configs endpoints
+        boolean isConfigAccess = path.contains("/api/config") 
+                && !path.contains("/api/config/version") 
+                && !path.contains("/api/config/public");
 
         // 3. Contact report is always protected
         boolean isContactReport = path.contains("/api/contact/report");
