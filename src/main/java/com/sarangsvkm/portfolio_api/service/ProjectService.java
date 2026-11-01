@@ -53,6 +53,15 @@ public class ProjectService {
         if (newData.getTechStack() != null)
             existing.setTechStack(enc(newData.getTechStack()));
 
+        if (newData.getProjectType() != null)
+            existing.setProjectType(enc(newData.getProjectType()));
+
+        if (newData.getGithubUrl() != null)
+            existing.setGithubUrl(enc(newData.getGithubUrl()));
+
+        if (newData.getImageUrl() != null)
+            existing.setImageUrl(enc(newData.getImageUrl()));
+
         Project updated = repo.save(existing);
         decrypt(updated);
         eventPublisher.publishEvent(new com.sarangsvkm.portfolio_api.event.ResumeChangedEvent(this));
@@ -64,6 +73,9 @@ public class ProjectService {
         p.setLink(enc(p.getLink()));
         p.setDescription(enc(p.getDescription()));
         p.setTechStack(enc(p.getTechStack()));
+        p.setProjectType(enc(p.getProjectType()));
+        p.setGithubUrl(enc(p.getGithubUrl()));
+        p.setImageUrl(enc(p.getImageUrl()));
     }
 
     private void decrypt(Project p) {
@@ -71,6 +83,9 @@ public class ProjectService {
         p.setLink(dec(p.getLink()));
         p.setDescription(dec(p.getDescription()));
         p.setTechStack(dec(p.getTechStack()));
+        p.setProjectType(dec(p.getProjectType()));
+        p.setGithubUrl(dec(p.getGithubUrl()));
+        p.setImageUrl(dec(p.getImageUrl()));
     }
 
     private String enc(String data) {

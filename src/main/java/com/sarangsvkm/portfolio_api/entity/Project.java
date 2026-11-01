@@ -23,4 +23,12 @@ public class Project {
     @Column(length = 500)
     private String techStack;
 
+    @Column(length = 100)
+    private String projectType;
+
+    @Column(length = 500)
+    private String githubUrl;
+
+    @Column(length = 500)
+    private String imageUrl;
 }
