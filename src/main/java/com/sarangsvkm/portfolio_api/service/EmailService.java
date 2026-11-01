@@ -74,11 +74,12 @@ public class EmailService {
 
             String fromAddress = (resendFromEmail != null && !resendFromEmail.trim().isEmpty())
                     ? resendFromEmail.trim()
-                    : "Sarang <onboarding@resend.dev>";
+                    : "Sarang S <noreply@sarangsvkm.in>";
 
             Map<String, Object> body = new HashMap<>();
             body.put("from", fromAddress);
             body.put("to", Collections.singletonList(toEmail));
+            body.put("reply_to", "sarangsvkm@gmail.com");
             body.put("subject", "Your One-Time Password (OTP) — Sarang S Portfolio");
             body.put("html", htmlBody);
 
