@@ -44,9 +44,19 @@ public class ResumeController {
         return ResponseEntity.ok(saved);
     }
 
-    // ✅ GET /api/resume — returns full resume data (Public)
+    // ✅ GET /api/resume — returns full resume data (Public / Admin)
     @GetMapping
-    public ResponseEntity<ResumeDTO> getResume() {
+    public ResponseEntity<ResumeDTO> getResume(
+            @RequestHeader(value = "X-Admin-Username", required = false) String username,
+            @RequestHeader(value = "X-Admin-Password", required = false) String password) {
+        if (username != null && password != null) {
+            try {
+                apiUserService.login(username, password);
+                return ResponseEntity.ok(resumeService.getResume(false));
+            } catch (Exception e) {
+                // Invalid credentials, fall back to redacted public view
+            }
+        }
         return ResponseEntity.ok(resumeJsonService.getCachedResume());
     }
 
