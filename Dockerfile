@@ -13,7 +13,7 @@ WORKDIR /app
 COPY --from=build /app/target/portfolio-api-*.jar app.jar
 
 ENV PORT=8080
-ENV SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+ENV SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
 EXPOSE 8080
 
