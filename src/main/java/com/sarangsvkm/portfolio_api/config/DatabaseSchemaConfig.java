@@ -55,11 +55,18 @@ public class DatabaseSchemaConfig {
                 stmt.execute("ALTER TABLE project ADD COLUMN IF NOT EXISTS github_url VARCHAR(1000)");
                 stmt.execute("ALTER TABLE project ADD COLUMN IF NOT EXISTS image_url VARCHAR(1000)");
 
-                // 3. SystemConfig table
+                // 3. SystemConfig & Image tables
                 stmt.execute("CREATE TABLE IF NOT EXISTS system_config (" +
                         "id BIGSERIAL PRIMARY KEY, " +
                         "config_key VARCHAR(255) UNIQUE NOT NULL, " +
                         "config_value TEXT NOT NULL)");
+
+                stmt.execute("CREATE TABLE IF NOT EXISTS image (" +
+                        "id BIGSERIAL PRIMARY KEY, " +
+                        "name VARCHAR(255), " +
+                        "type VARCHAR(255), " +
+                        "data OID, " +
+                        "profile_id BIGINT UNIQUE REFERENCES profile(id) ON DELETE CASCADE)");
 
                 log.info("Database schema migration completed successfully.");
             } catch (Exception e) {
