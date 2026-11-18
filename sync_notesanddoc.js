@@ -16,7 +16,98 @@ function sqlStr(val) {
 
 const resume = JSON.parse(fs.readFileSync('e:/SRG/portfolio-frontend/public/data/resume-data.json', 'utf8'));
 
-let sql = '-- Sync notesanddoc data to Neon PostgreSQL\nBEGIN;\n\n';
+let sql = `-- Sync notesanddoc data to PostgreSQL (Supabase / Neon)
+BEGIN;
+
+CREATE TABLE IF NOT EXISTS api_user (
+  userid SERIAL PRIMARY KEY,
+  username VARCHAR(255) UNIQUE,
+  password TEXT,
+  role VARCHAR(100)
+);
+CREATE TABLE IF NOT EXISTS profile (
+  id BIGSERIAL PRIMARY KEY,
+  name TEXT,
+  title TEXT,
+  about TEXT,
+  email TEXT,
+  phone TEXT,
+  location TEXT,
+  image_url TEXT,
+  banner_url TEXT,
+  resume_url TEXT
+);
+CREATE TABLE IF NOT EXISTS social_media (
+  id BIGSERIAL PRIMARY KEY,
+  platform VARCHAR(255),
+  url TEXT,
+  profile_id BIGINT REFERENCES profile(id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS experience (
+  id BIGSERIAL PRIMARY KEY,
+  role TEXT,
+  company TEXT,
+  start_date TEXT,
+  end_date TEXT,
+  description TEXT
+);
+CREATE TABLE IF NOT EXISTS education (
+  id BIGSERIAL PRIMARY KEY,
+  degree TEXT,
+  institution TEXT,
+  field_of_study TEXT,
+  start_date TEXT,
+  end_date TEXT,
+  description TEXT
+);
+CREATE TABLE IF NOT EXISTS project (
+  id BIGSERIAL PRIMARY KEY,
+  title TEXT,
+  description TEXT,
+  tech_stack TEXT,
+  link TEXT,
+  project_type VARCHAR(500),
+  github_url VARCHAR(1000),
+  image_url VARCHAR(1000)
+);
+CREATE TABLE IF NOT EXISTS skill (
+  id BIGSERIAL PRIMARY KEY,
+  name TEXT,
+  level TEXT,
+  category TEXT
+);
+CREATE TABLE IF NOT EXISTS contact_request (
+  id BIGSERIAL PRIMARY KEY,
+  name TEXT,
+  email TEXT,
+  phone TEXT,
+  message TEXT,
+  otp VARCHAR(50),
+  verified BOOLEAN DEFAULT FALSE,
+  otp_expiry TIMESTAMP,
+  date VARCHAR(100),
+  time VARCHAR(100),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS images (
+  id BIGSERIAL PRIMARY KEY,
+  name VARCHAR(255) UNIQUE,
+  type VARCHAR(255),
+  data BYTEA
+);
+CREATE TABLE IF NOT EXISTS system_config (
+  id BIGSERIAL PRIMARY KEY,
+  config_key VARCHAR(255) UNIQUE NOT NULL,
+  config_value TEXT NOT NULL
+);
+
+INSERT INTO profile (id, name) VALUES (1, 'init') ON CONFLICT (id) DO NOTHING;
+
+DELETE FROM api_user WHERE username IN ('admin', 'sarangsvkm');
+INSERT INTO api_user (username, password, role) VALUES ('sarangsvkm', ${sqlStr(enc('Kukku@3612#'))}, 'ADMIN');
+INSERT INTO api_user (username, password, role) VALUES ('admin', ${sqlStr(enc('password'))}, 'ADMIN');
+
+`;
 
 // 1. Profile
 sql += `UPDATE profile SET 

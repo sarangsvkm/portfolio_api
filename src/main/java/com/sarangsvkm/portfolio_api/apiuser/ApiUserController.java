@@ -20,7 +20,7 @@ public class ApiUserController {
     public ResponseEntity<?> register(@RequestBody ApiUser apiUser) {
         try {
             ApiUser saved = service.register(apiUser);
-            saved.setPassword(null); // 🔥 hide password
+            saved.setPassword(null);
             return ResponseEntity.ok(saved);
         } catch (RuntimeException e) {
             if (e.getMessage() != null && e.getMessage().equals("Username already exists")) {
@@ -33,17 +33,19 @@ public class ApiUserController {
     // ✅ LOGIN
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody ApiUser request) {
-
         try {
             ApiUser user = service.login(
                     request.getUsername(),
                     request.getPassword()
             );
 
-            user.setPassword(null); // 🔥 hide password
-
+            user.setPassword(null);
             return ResponseEntity.ok(user);
 
+        } catch (IllegalStateException dbEx) {
+            return ResponseEntity
+                    .status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body("Database temporarily unavailable (quota exceeded)");
         } catch (RuntimeException e) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
