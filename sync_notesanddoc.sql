@@ -41,6 +41,24 @@ INSERT INTO experience (role, company, start_date, end_date, description) VALUES
 
 DELETE FROM project;
 INSERT INTO project (title, link, description, tech_stack) VALUES (
+    'hTqtQwX0fSj7D6OXamr6iLxrFILVpSIkxKUZXbC2Df9X6dwFnEdoJ01kfAjh3+zin95XvMhG3NHI+JRcyaXwPvWlcHal6k1wyD2fNYgohf0=',
+    'wd6ztkYy72lzmJw5c9gmIWMzUytTYTcYQLfoKUgTnWfZxvdaJThkp0/e6nzMgEea',
+    'q99nYAV3Vp9TMX1L3b0L0r3LXHDTyp8UZJrn5VADc6jk0MXpNc8+HuUIhJjdCcFqzYffNEW4kGmK+8zTv+tLWjQ+81La/s88C+7OU4hzyxJRr9eGGw51SKCY1RIwxRwwR7zacRHLGCTSam3xjaMjLEx5N0XqkycqVLe6sAqtggktX9EbAU+qP5s7SoRBjBg6MKH+inIjD8AIWfIclV1oeSwonJIE2/XRI9Wxc6AvNuGwngjoYW8TwfpxfA7yfCO+/6LZKygpe48JcxtACUMxWVXq/VdcUXOVhQFXrMAaERs0Q05Taj6Y/VYIHbh+4lau/F1N9PFrSNBKgruUTlq6ywnAq7u8WXTRXuyfkSegYwIHGLDx5dNuSjIfPhW54cGhDzUlOx0P08YbOctY0RAT69N47Q/HCHZGV3e74BaLuu0vjHFmexwiOjCJ4iGJNDGNi07MlqgZLh6dQOxPIvLyDOc6L1q+GAE/Tm1rEAgO6+CMm4F63Lvo0lIxMpALALrhCPomE13DOOVaJkc0LRBzCi4NaFn30iBF2M7/nNmoQIoHUwvH+FByK/FrqQgDdtAvYv1JowH2csttNUCEsdwSPmf+84pBVwuFZ4nhddvZxYu/hSEJbrjthSnVoVKZbLVqXw+vUZl2SvJ69Y103JNRaFgNYhiD9B8h4elmXueSuaY=',
+    'wC/3BsmyOD03TuxDGTlJKUx7MAfFhTQwnkQ3ZA7/DeggTAi19wg6Wgypk3zEPmZriI8nDtSiWvYXikQPNtMmdnTJNuoa8HUuqLWq4rQtdIwNYX6Y4K55Mi5KOIMpWJ+NVh98rbNf8NQPLaKxHRWUpXmVqbtSTaWGNVz/d2gzhGA='
+  );
+INSERT INTO project (title, link, description, tech_stack) VALUES (
+    'XADMfCzm7gL8wdokbQbK4J1qXHpKbQX9hYGKj+w70hSCL4ufk9Ci8e+JirbLDtLS2NTkRMbK1zXksYzQgLFi6Q==',
+    'wd6ztkYy72lzmJw5c9gmISHMjPnk3V9k4EvQGsckyK3tR0iXW3r4Z3zytXT11mZQ',
+    'Tk+Nofv3XjlzQVvAnNgJb3usPSSgrg6USlygiiOoNKU4jLH3ih6+oMX0Mvaks6tm2lu9pmGWqDnaj6HfaYnjtXYRK1o/uVh77q0bGj0dyFygOjMjM0nncEUBirw6bSBcuDjhX5kdXcO0qwIPS1sIcZNnbgJzM+rqwZYrQ0yd66zCfzGC9KsavFqN/sUOn64I3eFaD+prOLXS+s4AbnzbTz7BvQ87p+0qh1iLne3J1WDcFhu9U/V5uMFPC61B6FyCUagff1pZJWmF54vGlT/jiMLPQCdRY2nLUOutBwOTreTk6Hw3u4RLlg0+ClWUvz9JFGDS4Qcq1QvBwVCZji6CCr5NROJTYg2AO+yXFdyBVPJQ2dgnsXVQbyoo3nJY5u81N7rETxzkbUaK2Tp9VETzdv0+iWvTHqrlE/vBNo64XkQxQTlukOV6T0qq4O+01WHVG2I2feBkIFhgK6fvI8a9H85RagCICPv8sHDaGVDZkDptY6+TJvAujOnQQAb9BpNHGjZ1Uz5sdUijBmqzxp/VloHGSaROsV9jeockpYSZRXO9z4hDyPVsv2ysoLwR8BVL1UVGGYLuHn2ZfPjHeKNQBYJdC900K8iV1nOomb72hBthyO37ohrFjedf2eIGhck3',
+    'wC/3BsmyOD03TuxDGTlJKRbHOSaUY6/hDKLdyXDf8LbFtRI1zLW3L84Lb2qE5Aicg9gH5BvPq9suNk9JNpRl2qtPmyy20te6ujKoZGzAaPnnE0J0hBIKh1Ibf55Wgfk6MI3Cp2WYcKWrBfQpCOntnQ=='
+  );
+INSERT INTO project (title, link, description, tech_stack) VALUES (
+    'fG26jIQ35WUjR8wPR43lbojTBbwEOn00xDY69D+9hpirxErHbmoAY7LYiVe54dVVHb0c1EuT/GHcSYWPyl32Yw==',
+    'wd6ztkYy72lzmJw5c9gmIYR7TPQLjYmeIxsB2mP6HJhVlvSvqUBk04ZBNOVdJI0ikjrqgR50sSjWyGj8xGlpvg==',
+    'N5tRxMNJQ5OY5CiMhAL4Lq9LmQE2SvVQe5mFrUX6StSx6K66DM7sMrozXICNwM6Hqmh5qR5kGBKlwtHOdajIpbtUr+9FI3qynTrIBBJvwAn/ObLp5ZR4ovF6e1pw4X9+APftabnUrEpU1isMI7sO+Pe0TWYgeI3ua+cwR+Xq+6Iuzak4nAhK3UwcDdj83CPRAclDXXE+TI4J726Vv01uTD0b5ysFWqus++wBd/N120OojnL42uHEc8JWuYURP8RX0yLLrdV0LChRi49YQkdY7ppzk/5aJKUL4FJdCV3o50A2KTptPZwZqhHgyujQOZ+kw6chfCZrRaHHp2a0zCIxoKWtsUYAMbWGrTTQ1pdZCRD4S0SB7QzTd+QWGTOyEoPmjouVN9qrt8Kic4N/NJEHlAOylk/X5CxXnzchvWrEjQqUWYvHcpMuTJaIiJEd4ZRLm2PoK3aRL0hDJsIu0/BOWKf7ANMkE6TtdqwUWuzBqJ36i2ZAsidwWEISCv2rs8gc7rg8VQbyAvYtSz9t0rY3QRKI7AR0yXy1KVXeubw87jt3IvYTF0D4xbZNgeMsZQ7HVlu07nf7+ePE4AwkImw6VIehUROinO7QrKx2/qkC76IQc1anQ6biPWc3LQeVcCECmbpkrTW1LkuwMoWG7dGT3A==',
+    'jf76XYZV9kPtRiRoA+BLZYCQuXvIFoB9rVLuhc1obJvCejcHBgcmnQPqjHMlzCRF7BaUefDdm7v4QhEtSBTvZzQGvvWT0y9/1c+Q9RWTr7rXcq27tK3sHzELEXaw3IN8J1T22SSSyB/KW112+GderRscVOLeh8vKuneBGgO8zPE='
+  );
+INSERT INTO project (title, link, description, tech_stack) VALUES (
     'wSIcAEQWnxpcgDANqNrTYbaeCJ1fo/xypmprvEwcbQgbMJMiotLHTdqaBryvtP662ApmbUEhlWB+JCCk0RA4+d7J/MZWvwqNVVo+6KigYSw=',
     'wd6ztkYy72lzmJw5c9gmIdR4P6REzWkn1nqn7UEvS08=',
     'wI5T98R8RGlwbfP3XHmi0TWcsiuS2aS4RWoml48s3zGvP2N3F+garveIIqoxlORybRWeVau97jvt6LO3XHLK012XE2fcmYC2ykVg+GGb6NB2s6m/yatc/0Nmk2BilLhad6I/ChDfHilRLeD9HAhQX5OR1fO+N+4ZZah4aZW2EdYBFlLMYDaK24Rgbjs24WAXYrOhNqYMqsV+6FvcWye1qi1iBMmaB8pNNfZuJF1FoH/1eh4xrr3KKdSLNXnnV50QwE62vP6AI/ZySVxL/3gz9U/99DDlthdjlq9PbUlZubbp9+1kftpp9AzVg1sW7N9Jh/3HJJKuswL6szcRMJ/AoMN1eR4i15vebHClXy9mKg581q/xA9gcNVnbGK3YCrov8O69hy6PJTlbJCMS1zsOQrfAFlQ8oDmxujT2vEiHsTFpTPtogf5yJe2O3K0m7xcYejB5ToVqM0wXe6YQsZE4CA==',
@@ -63,6 +81,18 @@ INSERT INTO project (title, link, description, tech_stack) VALUES (
     'wd6ztkYy72lzmJw5c9gmIdR4P6REzWkn1nqn7UEvS08=',
     '5qi5hGwjFtgB2syB8bYBnz/NjYzVy5da1poIyshAQHuWb1K0N0/Fn38SnQvkMW9+vFumGvICN8+cJCZcePZ7ycbyqG1+PxS7NubaAjmTG1DXH0nOrasq8HFt1n5lQLkMAmZByCHKz6PmJe03r6n2S9fZEEp7y2hAG4sB3gNCtSvrUXD81XqlCa5KOG2NpWVUE3hWGbVtPWoDVtomfIeHfa4SjwxOU61mOjSBYMuyptJs4ZqOfyorovO4V8VWSqZEWYunW2ezfW5RqG2ArinGlWFDKmNZUk7MgyMIbV8w9SwEdqTRagPfCPwpw3DKAsYn86jCvqEgK3N01/I9oYQ3w29jhre6PSxbgMgZt4mSz4aFhfAGm4FBv0eNDL9t9TlR',
     '4kjzT7/+9rxB7QU+Rr2Fir3DT8JWqh6jJVgxUH1eA72RRP1FpwGcC3Pa2OYvONuR/9b9y/w4LtGqO3Vfak4euHO9AK0HBCQ+O0IX4K8c9Xv8LpOMVV99ioHGmSIP8wSk'
+  );
+INSERT INTO project (title, link, description, tech_stack) VALUES (
+    'G9Iqay3GIMWBu7tJmnMTskn8LhDe0gmHHY8YqWmRG7nCoD+gXt8RPjLo1yPfDszE',
+    'wd6ztkYy72lzmJw5c9gmIdR4P6REzWkn1nqn7UEvS08=',
+    '42y0U3INI6f6L/iPUSENNmXz9ZO1wIH4SLQOy1qFOlswQybX9XKzD6nSv36IhJrob+Zvgdb4SiKb4A35IoaXbyC8JuVwHQvvkwWHHC8RNvX5K9v5x9P4t2MpugRj2S9Qz7qY/48jL4Ds1HYQzurMkrJbzCcZ9AS7fJetTgVR+d14ZDTYXBdII8RRdP2XUEc0GI3rd0mPvAl+9pA3tIbMcje8jY/3s0qRXL3w0KFIyh2Prwkdel2MyThyIXXrVpDDmbpkrTW1LkuwMoWG7dGT3A==',
+    'wC/3BsmyOD03TuxDGTlJKUx7MAfFhTQwnkQ3ZA7/DejDx3NL6UJ9IU8urz4yRwwHtZXEjGn+ly6zJvgur+Z+4rqua1asBn8CZjFPkDmI1T0='
+  );
+INSERT INTO project (title, link, description, tech_stack) VALUES (
+    'lyRljBauxeTx9zJBXhLAeOidvfKygzGvQioPNbbbMPzGpyDSfB6mrIZ/yB1BZ9fq5YTbe3gShvhb4OIRVNTxXA==',
+    'wd6ztkYy72lzmJw5c9gmIdR4P6REzWkn1nqn7UEvS08=',
+    'jW0PwI9byvPZ8n/L5f/XTDvF9VAPokalE80NV0aPaGMNR1fNgzUgCcSvAAG3F+eksuIriF1FAkzoHwvyLghTRzxWqMdx9M3UqSJCHkeomzBBL41hqeGMVHQprEk8o8bBfDjRuiwqUNVnEtfUFwV0E4IzbWsUv3fqRxIrA1ynDIDVucYFmT+/n6mMkHgTDOeCSTcWWAScFB4500N0uLHHGQ==',
+    'z3HyzHqyG2kN0D6pTS6XpPAiEk+rI05pPYJJLAsE/Jyu58aXNt9+wKj2g7hshAhIq0+bLLbS17q6MqhkbMBo+X/nCcBL/jJkiXGU1JYp020='
   );
 
 DELETE FROM skill;
@@ -127,6 +157,11 @@ INSERT INTO skill (name, level, category) VALUES (
     'c93BNPheGk/lW3WnjYGJg/wuk4xVX32KgcaZIg/zBKQ='
   );
 INSERT INTO skill (name, level, category) VALUES (
+    's7mpuJFcYt1pp9z+7ZDg/6k7CRz533L6KeI+ZGlD3Z36KZTHcHH81QeAGcgAmYei',
+    'ZSTIFqUJnbAfpir2WQz+7Q==',
+    'c93BNPheGk/lW3WnjYGJg/wuk4xVX32KgcaZIg/zBKQ='
+  );
+INSERT INTO skill (name, level, category) VALUES (
     '5e5bEwLK7epH3ev74mEsxQ==',
     'LK2rgx/qdcvU+jLJmunqTA==',
     'SQ9UJao4eUoV9RyU0RjtExSWRXTmAtrqRcFLnU+glQY='
@@ -166,21 +201,21 @@ DELETE FROM education;
 INSERT INTO education (degree, institution, field_of_study, start_date, end_date) VALUES (
     'I8T6lsB6H90T5wDnDTdSEUtgHJdUSUbFwpVxO6S6Jqs=',
     'sdVvq4Ew6qjdJ4yGKYfm0eCPLXPdamoxmOumSeNH6a5gcqxoKW19/yfGgyD5KrmP/C6TjFVffYqBxpkiD/MEpA==',
-    'M9KPTxQyoOJvvDhG7LGNUBdsu0cbuSxBNheN1mxhxz6ZZSkEiCX5DZoLMxs0NqzooVTvvSVEgoe+Wt0uEu9Bqk7HzIe0nVw+Dhda80rNA7p8WYva/aExBYFXd2UPMQfx',
-    'YoZqMrPQbnyjLm7hgF58uA==',
-    'rV3HxTCYQ4uJsSfIwmRemg=='
+    'M9KPTxQyoOJvvDhG7LGNUICx3/oUajwqkZmRc8WdEmE=',
+    'f+HqspC/riafUaB443dlkg==',
+    'Ew0mctnp+E/EQmJPj8BSog=='
   );
 INSERT INTO education (degree, institution, field_of_study, start_date, end_date) VALUES (
     '5smSCUOloCtBG4LgthiMOpDrEGa6iELfp1Y/OHfHMHM=',
     'OKlgucArUKbOfSSsIiDwAg==',
-    'FHR+z78frA7R3ysEWR3skA==',
+    'Aul8fNX6d4RpWqijeByP0ZrB2YyE7IvslBQZFynqwcc=',
     'IOKEqCVC04HlyBXuhuJHhA==',
     '/kts/+9DfMbVfhiFj6WpGQ=='
   );
 INSERT INTO education (degree, institution, field_of_study, start_date, end_date) VALUES (
     '9DkA5cMPAWc8QgW7NkhtsQoWQzlMkIwEUPm8HD0W969izMTpL/PsMNvnBhwI7HvS',
     'OKlgucArUKbOfSSsIiDwAg==',
-    'W6wh0g5ir6NZV7C6uKzIdHwVaYEJPs3wUMPihM//fMA=',
+    'GdY/wjBEwvW/1qNT6TOzouAKKjJXc29lBdckQDNghb78LpOMVV99ioHGmSIP8wSk',
     '1ZAsg16bWRYCbnc05Kpv6g==',
     'IOKEqCVC04HlyBXuhuJHhA=='
   );
